@@ -1,0 +1,157 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.26;
+
+import {DiceToken} from "./DiceToken.sol";
+
+/**
+ * @title LiquidityPool
+ * @author Yug Agarwal
+ * @dev A liquidity pool contract where liquidity providers can deposit and withdraw liquidity in native tokens.
+ * @dev also this serves as a base contract for the DiceGame contract.
+ * @dev This contract is owned by DiceGame contract.
+ * @notice The liquidity providers can gain rewards based on the performances of players in the DiceGame contract.
+ *                                                                         
+                         .            .                                   .#                        
+                       +#####+---+###+#############+-                  -+###.                       
+                       +###+++####+##-+++++##+++##++####+-.         -+###+++                        
+                       +#########.-#+--+####++###- -########+---+++#####+++                         
+                       +#######+#+++--+####+-..-+-.###+++########+-++###++.                         
+                      +######.     +#-#####+-.-------+############+++####-                          
+                     +####++...     ########-++-        +##########++++++.                          
+                    -#######-+.    .########+++          -++######+++-                               
+                    #++########--+-+####++++-- . ..    .-#++--+##+####.                              
+                   -+++++++++#####---###---.----###+-+########..-+#++##-                            
+                   ++###+++++#####-..---.. .+##++++#++#++-+--.   .-++++#                             
+                  .###+.  .+#+-+###+ ..    +##+##+#++----...---.  .-+--+.                            
+                  ###+---------+####+   -####+-.......    ...--++.  .---.                           
+                 -#++++-----#######+-  .-+###+.... .....      .-+##-.  .                            
+                 ##+++###++######++-.   .--+---++---........  ...---.  .                            
+                -####+-+#++###++-.        .--.--...-----.......--..... .                            
+                +######+++###+--..---.....  ...---------------.. .. .  .                            
+               .-#########+#+++--++--------......----++--.--.  .--+---.                             
+                -+++########++--++++----------------------.--+++--+++--                             
+           .######-.-++++###+----------------------..---++--++-+++---..                             
+           -##########-------+-----------------------+-++-++----..----+----+#####++--..             
+           -#############+..  ..--..----------.....-+++++++++++++++++##################+.           
+           --+++++#########+-   . ....  ....... -+++++++++++++++++++############-.----+##-          
+           -----....-+#######+-             .. -+++++++++++++++++++++##+######+.       +++.         
+           --------.....---+#####+--......----.+++++++++++++++++++++##+-+++##+.        -++-         
+           -------...   .--++++++---.....-----.+++++++++++++++++++++++. -+++##-        .---         
+           #################+--.....-------.  .+++++++++++++++++++++-       -+-.       .---         
+           +#########++++-.. .......-+--..--++-++++++++++++++++++++-         .-... ....----         
+           -#####++---..   .--       -+++-.  ..+++++++++++++++++++--        .-+-......-+---         
+           +####+---...    -+#-   .  --++++-. .+++++++++++++++++++---        --        -+--         
+           ++++++++++--....-++.--++--.--+++++-.+++++++++++++++++++---. .......         ----         
+          .--++#########++-.--.+++++--++++###+-++++++++++++++++++++----   .-++-        ----         
+           .-+#############+-.++#+-+-++#######-++++++++++++++++++++----   -++++-      ..---         
+          .---+############+.+###++--++#####++-+++++++++++++++++++++-------++++-........-+-         
+           --+-+##########-+######+++++-++++++-++++++++++++++++++++++-----.----.......---+-         
+          .--+---#######..+#######+++++++--+++-+++++++++++++++++++++++-----------------+++-         
+          .++--..-+##-.-########+++++---++ .+-.+++++++++++++++++++++++++++++++++++---+++++-         
+          -+++. ..-..-+#########++-++--..--....+++++++++++++++++++++++++++++++++++++++++++-         
+          -++-......-+++############++++----- .+++++++++++++++++++++++++++++++++++++++++++-         
+          +##-.....---+#######+####+####+--++-.+++++++++++++++++++++++++++++++++++++++++++-         
+         .#+++-...-++######++-+-----..----++##-+++++++++++++++++++++++++++++++++++++++++++-         
+         .+++--------+##----+------+-..----+++-+++++++++++++++++++++++++++++++++++++++++++-         
+          ----.-----+++-+-...------++-----...--+++++++++++++++++++++++++++++++++++++++++++-         
+         .-..-.--.----..--.... ....++--.  ....-+++++++++++++++++++++++++++++++++++++++++++-         
+          -----------.---..--..   ..+.  . ... .+++++++++++++++++++++++++++++++++++++++++++-         
+        .+#+#+---####+-.    .....--...   .    .+++++++++++++++++++++++++++++++++++++++++++-         
+        -+++++#++++++++.    ..-...--.. ..     .+++++++++++++++++++++++++++++++++++++++++++-         
+        ++++++-------++--   . ....--.. . . .. .+++++++++++++++++++++++++-+----------...             
+        -++++--++++.------......-- ...  ..  . .---------------...                                   
+        -++-+####+++---..-.........                                                                  
+          .....                                                                                      
+ */
+contract LiquidityPool {
+    error LiquidityPool__ZeroValueNotAllowed();
+    error LiquidityPool__NotOwner();
+    error LiquidityPool__InvalidAddress();
+    error LiquidityPool__TransferFailed();
+    error LiquidityPool__InsufficientLiquidity();
+
+    address immutable private i_diceGame;
+    DiceToken immutable private i_liquidityToken;
+
+    event LiquidityAdded(address indexed provider, uint256 amount);
+    event LiquidityRemoved(address indexed provider, uint256 amount);
+    event RewardsAdded(uint256 amount);
+
+    modifier onlyDiceGame() {
+        if(msg.sender != i_diceGame) {
+            revert LiquidityPool__NotOwner();
+        }
+        _;
+    }
+
+    constructor(address _diceGameAddress, address _liquidityToken) {
+        if(_diceGameAddress == address(0)) {
+            revert LiquidityPool__InvalidAddress();
+        }
+        i_diceGame = _diceGameAddress;
+        i_liquidityToken = DiceToken(_liquidityToken);
+    }
+
+    function addLiquidity() external payable {
+        if(msg.value == 0) {
+            revert LiquidityPool__ZeroValueNotAllowed();
+        }
+        
+        i_liquidityToken.mint(msg.sender, msg.value);
+
+        emit LiquidityAdded(msg.sender, msg.value);
+    }
+
+    function removeLiquidity(uint256 _amount) external {
+        if(_amount == 0) {
+            revert LiquidityPool__ZeroValueNotAllowed();
+        }
+        if(i_liquidityToken.balanceOf(msg.sender) < _amount) {
+            revert LiquidityPool__InsufficientLiquidity();
+        }
+        if(address(this).balance < _amount) {
+            revert LiquidityPool__InsufficientLiquidity();
+        }
+
+        i_liquidityToken.burnFrom(msg.sender, _amount);
+
+        (bool success,) = payable(msg.sender).call{value: _amount}("");
+
+        if(!success) {
+            revert LiquidityPool__TransferFailed();
+        }
+
+        emit LiquidityRemoved(msg.sender, _amount);
+    }
+
+    function addToRewards() external payable onlyDiceGame {
+        if(msg.value == 0) {
+            revert LiquidityPool__ZeroValueNotAllowed();
+        }
+
+        i_liquidityToken.rebase();
+
+        emit RewardsAdded(msg.value);
+    }
+
+    function getTotalLiquidity() external view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function getLiquidityToken() external view returns (address) {
+        return address(i_liquidityToken);
+    }
+
+    function getDiceGame() external view returns (address) {
+        return i_diceGame;
+    }
+
+    function getLiquidityProviderBalance(address _provider) external view returns (uint256) {
+        return i_liquidityToken.balanceOf(_provider);
+    }
+
+    function getLiquidityProviderShares(address _provider) external view returns (uint256) {
+        return i_liquidityToken.sharesOf(_provider);
+    }
+}
