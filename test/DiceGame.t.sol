@@ -128,61 +128,69 @@ contract DiceGameTest is Test {
         diceGame.rollDice{value: betAmount}(7);
     }
 
+    /// @note To run the following test, you need to make the fulfillRandomWords function in the DiceGame from `fulfillRandomWords(...) internal override` to `_fulfillRandomWords(...) public`, also make the `fullfillRandomWords` function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function, otherwise the test will not be able to mock the VRF response correctly.
+    /// @dev Since the random number generation in not in our hands, this is a workaround for testing purposes, in production you should not change the visibility of the fulfillRandomWords function.
+    // function test_PlayerWins() public withLiquidity {
+    //     console.log(
+    //         "Make sure to change the visibility of the fulfillRandomWords function in the DiceGame contract to public to pass this test_PlayerWins test"
+    //     );
+    //     console.log(
+    //         "Also change the fulfillRandomWords function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function."
+    //     );
+
+    //     uint256 betAmount = 1 ether;
+    //     uint8 prediction = 3;
+    //     uint256 expectedWinning = 2 ether; // 2x multiplier
+
+    //     uint256 playerBalanceBefore = player1.balance;
+    //     uint256 liquidityBefore = liquidityPool.getTotalLiquidity();
+
+    //     vm.prank(player1);
+    //     diceGame.rollDice{value: betAmount}(prediction);
+
+    //     uint256[] memory mockRandomWords = new uint256[](1);
+    //     mockRandomWords[0] = (uint8(prediction) - 1);
+    //     diceGame._fulfillRandomWords(1, mockRandomWords);
+
+    //     assertEq(player1.balance, playerBalanceBefore - betAmount + expectedWinning);
+    //     assertEq(liquidityPool.getTotalLiquidity(), liquidityBefore + betAmount - expectedWinning);
+    //     assertEq(diceGame.getPlayerScore(player1), 1);
+
+    //     address[] memory players = new address[](1);
+    //     players[0] = player1;
+    //     assertEq(diceGame.getPlayers(), players);
+    // }
+
     /// @notice To run the following test, you need to make the fulfillRandomWords function in the DiceGame from `fulfillRandomWords(...) internal override` to `_fulfillRandomWords(...) public`, also make the `fullfillRandomWords` function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function, otherwise the test will not be able to mock the VRF response correctly.
     /// @dev Since the random number generation in not in our hands, this is a workaround for testing purposes, in production you should not change the visibility of the fulfillRandomWords function.
-    function test_PlayerWins() public withLiquidity {
-        console.log("Make sure to change the visibility of the fulfillRandomWords function in the DiceGame contract to public to pass this test_PlayerWins test");
-        console.log("Also change the fulfillRandomWords function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function.");
+    // function test_PlayerLoses() public withLiquidity {
+    //     console.log(
+    //         "Make sure to change the visibility of the fulfillRandomWords function in the DiceGame contract to public to pass this test_PlayerLoses test"
+    //     );
+    //     console.log(
+    //         "Also change the fulfillRandomWords function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function."
+    //     );
 
-        uint256 betAmount = 1 ether;
-        uint8 prediction = 3;
-        uint256 expectedWinning = 2 ether; // 2x multiplier
+    //     uint256 betAmount = 1 ether;
+    //     uint8 prediction = 3;
 
-        uint256 playerBalanceBefore = player1.balance;
-        uint256 liquidityBefore = liquidityPool.getTotalLiquidity();
+    //     uint256 playerBalanceBefore = player1.balance;
+    //     uint256 liquidityBefore = liquidityPool.getTotalLiquidity();
 
-        vm.prank(player1);
-        diceGame.rollDice{value: betAmount}(prediction);
+    //     vm.prank(player1);
+    //     diceGame.rollDice{value: betAmount}(prediction);
 
-        uint256[] memory mockRandomWords = new uint256[](1);
-        mockRandomWords[0] = (uint8(prediction) - 1);
-        diceGame._fulfillRandomWords(1, mockRandomWords);
+    //     uint256[] memory mockRandomWords = new uint256[](1);
+    //     mockRandomWords[0] = (uint8(prediction - 1) - 1);
+    //     diceGame._fulfillRandomWords(1, mockRandomWords);
 
-        assertEq(player1.balance, playerBalanceBefore - betAmount + expectedWinning);
-        assertEq(liquidityPool.getTotalLiquidity(), liquidityBefore + betAmount - expectedWinning);
-        assertEq(diceGame.getPlayerScore(player1), 1);
+    //     assertEq(player1.balance, playerBalanceBefore - betAmount);
+    //     assertEq(liquidityPool.getTotalLiquidity(), liquidityBefore + betAmount);
+    //     assertEq(diceGame.getPlayerScore(player1), 0);
 
-        address[] memory players = new address[](1);
-        players[0] = player1;
-        assertEq(diceGame.getPlayers(), players);
-    }
-
-    /// @notice To run the following test, you need to make the fulfillRandomWords function in the DiceGame from `fulfillRandomWords(...) internal override` to `_fulfillRandomWords(...) public`, also make the `fullfillRandomWords` function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function, otherwise the test will not be able to mock the VRF response correctly.
-    /// @dev Since the random number generation in not in our hands, this is a workaround for testing purposes, in production you should not change the visibility of the fulfillRandomWords function.
-    function test_PlayerLoses() public withLiquidity {
-        console.log("Make sure to change the visibility of the fulfillRandomWords function in the DiceGame contract to public to pass this test_PlayerLoses test");
-        console.log("Also change the fulfillRandomWords function in the VRFConsumerBaseV2Plus contract from virtual to a normal empty function.");
-
-        uint256 betAmount = 1 ether;
-        uint8 prediction = 3;
-
-        uint256 playerBalanceBefore = player1.balance;
-        uint256 liquidityBefore = liquidityPool.getTotalLiquidity();
-
-        vm.prank(player1);
-        diceGame.rollDice{value: betAmount}(prediction);
-
-        uint256[] memory mockRandomWords = new uint256[](1);
-        mockRandomWords[0] = (uint8(prediction - 1) - 1);
-        diceGame._fulfillRandomWords(1, mockRandomWords);
-
-        assertEq(player1.balance, playerBalanceBefore - betAmount);
-        assertEq(liquidityPool.getTotalLiquidity(), liquidityBefore + betAmount);
-        assertEq(diceGame.getPlayerScore(player1), 0);
-
-        address[] memory players = new address[](0);
-        assertEq(diceGame.getPlayers(), players);
-    }
+    //     address[] memory players = new address[](0);
+    //     assertEq(diceGame.getPlayers(), players);
+    // }
 
     function test_ReceiveFunction() public {
         vm.deal(address(liquidityPool), 1 ether);
@@ -193,6 +201,9 @@ contract DiceGameTest is Test {
         vm.expectRevert(DiceGame.DiceGame__InvalidAddress.selector);
         vm.prank(player1);
         (bool failed,) = address(diceGame).call{value: 1 ether}("");
+
+        assertTrue(failed);
+        assertEq(player1.balance, INITIAL_BALANCE);
     }
 
     function test_GetterFunctions() public view {

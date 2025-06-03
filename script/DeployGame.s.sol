@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity  ^0.8.24;
+pragma solidity ^0.8.24;
 
 import {Script} from "../lib/forge-std/src/Script.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
@@ -9,25 +9,13 @@ import {DiceToken} from "../src/DiceToken.sol";
 import {LiquidityPool} from "../src/LiquidityPool.sol";
 
 contract DeployGame is Script {
-    function run()
-        external
-        returns (
-            DiceGame game,
-            LiquidityPool liquidityPool,
-            DiceToken diceToken
-        )
-    {
-        (game, liquidityPool, diceToken, /* helperConfig */) = deployContracts();
+    function run() external returns (DiceGame game, LiquidityPool liquidityPool, DiceToken diceToken) {
+        (game, liquidityPool, diceToken, /* helperConfig */ ) = deployContracts();
     }
 
     function deployContracts()
         public
-        returns (
-            DiceGame game,
-            LiquidityPool liquidityPool,
-            DiceToken diceToken,
-            HelperConfig helperConfig
-        )
+        returns (DiceGame game, LiquidityPool liquidityPool, DiceToken diceToken, HelperConfig helperConfig)
     {
         helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
@@ -50,11 +38,7 @@ contract DeployGame is Script {
 
         vm.startBroadcast(config.deployerKey);
         game = new DiceGame(
-            config.minBet,
-            config.vrfCoordinator,
-            config.gasLane,
-            config.subscriptionId,
-            config.callBackGasLimit
+            config.minBet, config.vrfCoordinator, config.gasLane, config.subscriptionId, config.callBackGasLimit
         );
         liquidityPool = new LiquidityPool(address(game));
         game.setLiquidityPool(address(liquidityPool));
