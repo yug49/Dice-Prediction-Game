@@ -21,7 +21,7 @@ contract DeployGame is Script {
     }
 
     function deployContracts()
-        internal
+        public
         returns (
             DiceGame game,
             LiquidityPool liquidityPool,

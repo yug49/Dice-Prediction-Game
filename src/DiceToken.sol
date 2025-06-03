@@ -73,7 +73,7 @@ contract DiceToken is ERC20 {
     mapping(address => uint256) private s_shares;
 
     // Events
-    event Rebase(uint256 totalSupplyBefore, uint256 totalSupplyAfter);
+    event Rebase(uint256 totalSupplyAfter);
     event SharesTransfer(address indexed from, address indexed to, uint256 shares);
 
     modifier onlyLiquidityPool() {
@@ -170,7 +170,7 @@ contract DiceToken is ERC20 {
      */
     function rebase() external onlyLiquidityPool {
         uint256 newTotalSupply = getTotalPoolValue();
-        emit Rebase(newTotalSupply, newTotalSupply);
+        emit Rebase(newTotalSupply);
     }
 
     /**

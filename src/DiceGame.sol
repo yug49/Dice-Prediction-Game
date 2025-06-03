@@ -85,12 +85,11 @@ contract DiceGame is VRFConsumerBaseV2Plus {
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
-    uint16 private constant MULTIPLIER = 200; // 2x multiplier
-    uint16 private constant MULTIPLIER_PRECISION = 100;
+    uint16 private constant MULTIPLIER = 2; // 2x multiplier
 
     uint256 private immutable i_minBet;
     bytes32 private immutable i_gasLane;
-    uint256 private immutable i_subscriptionId; 
+    uint256 private immutable i_subscriptionId;
     uint32 private immutable i_callBackGasLimit;
 
     address private s_liquidityPool; // Address of the liquidity pool contract
@@ -116,10 +115,10 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     }
 
     event PlayerWon(
-        address indexed player, uint256 indexed betAmount, uint256 winningAmount, uint8 indexed rolledNumber
+        address indexed player, uint256 indexed betAmount, uint256 winningAmount, uint256 indexed rolledNumber
     );
 
-    event PlayerLost(address indexed player, uint256 indexed betAmount, uint8 indexed rolledNumber);
+    event PlayerLost(address indexed player, uint256 indexed betAmount, uint256 indexed rolledNumber);
 
     /**
      * @param _minBet Minimum bet amount
@@ -181,28 +180,25 @@ contract DiceGame is VRFConsumerBaseV2Plus {
         if (requestId == 0) {
             revert DiceGame__GameFailed();
         }
-
-        s_predictedNumber = 0;
-        s_currentPlayer = payable(address(0));
-        s_bet = 0;
     }
 
     /**
      * @param randomWords The array of random words returned by the VRF
      */
     function fulfillRandomWords(uint256, /*requestId*/ uint256[] calldata randomWords) internal override {
-        uint8 rolledNumber = uint8((randomWords[0] % 6) + 1);
-        if (rolledNumber == s_predictedNumber) {
-            uint256 winningAmount = (s_bet * MULTIPLIER) / MULTIPLIER_PRECISION;
+        uint256 rolledNumber;
+        randomWords[0] < 6 ? rolledNumber = randomWords[0] + 1 : rolledNumber = (randomWords[0] % 6) + 1;
+        if (uint8(rolledNumber) == s_predictedNumber) {
+            uint256 winningAmount = s_bet * MULTIPLIER;
             uint256 amountToGetFromPool = winningAmount - s_bet;
             ILiquidityPool(s_liquidityPool).getWinningAmountDifference(amountToGetFromPool);
-            
+
             (bool success,) = s_currentPlayer.call{value: winningAmount}("");
             if (!success) {
                 revert DiceGame__TransferFailed();
             }
             if (s_playersScores[s_currentPlayer] == 0) s_players.push(s_currentPlayer);
-            
+
             unchecked {
                 s_playersScores[s_currentPlayer]++;
             }
@@ -217,6 +213,10 @@ contract DiceGame is VRFConsumerBaseV2Plus {
 
             emit PlayerLost(s_currentPlayer, s_bet, rolledNumber);
         }
+
+        s_predictedNumber = 0;
+        s_currentPlayer = payable(address(0));
+        s_bet = 0;
     }
 
     receive() external payable onlyLiquidityPool {}
