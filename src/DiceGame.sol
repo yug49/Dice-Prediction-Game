@@ -97,6 +97,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     GameState private s_gameState;
     mapping(address => uint256) private s_playersScores;
     address[] private s_players;
+    uint8 private s_mostRecentRoll;
 
     uint8 private s_predictedNumber;
     address payable private s_currentPlayer;
@@ -188,6 +189,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     function fulfillRandomWords(uint256, /*requestId*/ uint256[] calldata randomWords) internal override {
         uint256 rolledNumber;
         randomWords[0] < 6 ? rolledNumber = randomWords[0] + 1 : rolledNumber = (randomWords[0] % 6) + 1;
+        s_mostRecentRoll = uint8(rolledNumber);
         if (uint8(rolledNumber) == s_predictedNumber) {
             uint256 winningAmount = s_bet * MULTIPLIER;
             uint256 amountToGetFromPool = winningAmount - s_bet;
@@ -241,5 +243,9 @@ contract DiceGame is VRFConsumerBaseV2Plus {
 
     function getSubscriptionId() external view returns (uint256) {
         return i_subscriptionId;
+    }
+
+    function getMostRecentRoll() external view returns (uint8) {
+        return s_mostRecentRoll;
     }
 }

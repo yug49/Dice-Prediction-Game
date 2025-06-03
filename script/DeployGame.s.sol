@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Script} from "../lib/forge-std/src/Script.sol";
+import {Script, console} from "../lib/forge-std/src/Script.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 import {CreateSubscription, FundSubscription, AddConsumer} from "./Interactions.s.sol";
 import {DiceGame} from "../src/DiceGame.sol";
@@ -11,6 +11,10 @@ import {LiquidityPool} from "../src/LiquidityPool.sol";
 contract DeployGame is Script {
     function run() external returns (DiceGame game, LiquidityPool liquidityPool, DiceToken diceToken) {
         (game, liquidityPool, diceToken, /* helperConfig */ ) = deployContracts();
+
+        console.log("DiceGame deployed at:", address(game));
+        console.log("LiquidityPool deployed at:", address(liquidityPool));
+        console.log("DiceToken deployed at:", address(diceToken));
     }
 
     function deployContracts()
