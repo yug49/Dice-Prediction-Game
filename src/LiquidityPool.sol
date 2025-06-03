@@ -84,6 +84,7 @@ contract LiquidityPool {
     event LiquidityAdded(address indexed provider, uint256 amount);
     event LiquidityRemoved(address indexed provider, uint256 amount);
     event RewardsAdded(uint256 amount);
+    event WinningAmountWithdrawn(uint256 amount);
 
     modifier onlyDiceGame() {
         if (msg.sender != i_diceGame) {
@@ -150,6 +151,25 @@ contract LiquidityPool {
         i_liquidityToken.rebase();
 
         emit RewardsAdded(msg.value);
+    }
+
+    function getWinningAmountDifference(uint256 _winningAmountDifference) external lock onlyDiceGame{
+        if (_winningAmountDifference == 0) {
+            revert LiquidityPool__ZeroValueNotAllowed();
+        }
+        if (address(this).balance < _winningAmountDifference) {
+            revert LiquidityPool__InsufficientLiquidity();
+        }
+
+        (bool success,) = payable(i_diceGame).call{value: _winningAmountDifference}("");
+
+        if (!success) {
+            revert LiquidityPool__TransferFailed();
+        }
+        
+        i_liquidityToken.rebase();
+
+        emit WinningAmountWithdrawn(_winningAmountDifference);
     }
 
     function getTotalLiquidity() external view returns (uint256) {

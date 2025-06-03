@@ -62,7 +62,7 @@ contract HelperConfig is Script, CodeConstants {
             minBet: 0.000005 ether, // 5e12
             vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-            subscriptionId: 39479495189486144213615272566875887764374593789286701718854749990062729762837,
+            subscriptionId: 37749700595957342042634028598145482046731427631570758426533291758021715136613,
             callBackGasLimit: 500000, //5e5
             deployerKey: vm.envUint("PRIVATE_KEY"),
             link: 0x779877A7B0D9E8603169DdbD7836e478b4624789

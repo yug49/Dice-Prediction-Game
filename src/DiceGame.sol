@@ -8,6 +8,7 @@ import {VRFV2PlusClient} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8//vrf/dev/libraries/VRFV2PlusClient.sol";
 import {IVRFCoordinatorV2Plus} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
+import {ILiquidityPool} from "./interfaces/ILiquidityPool.sol";
 
 /**
  * @title DiceGame
@@ -89,7 +90,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
 
     uint256 private immutable i_minBet;
     bytes32 private immutable i_gasLane;
-    uint256 private immutable i_subscriptionId; //39479495189486144213615272566875887764374593789286701718854749990062729762837
+    uint256 private immutable i_subscriptionId; 
     uint32 private immutable i_callBackGasLimit;
 
     address private s_liquidityPool; // Address of the liquidity pool contract
@@ -101,6 +102,11 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     uint8 private s_predictedNumber;
     address payable private s_currentPlayer;
     uint256 private s_bet;
+
+    modifier onlyLiquidityPool() {
+        if (msg.sender != s_liquidityPool) revert DiceGame__InvalidAddress();
+        _;
+    }
 
     modifier Lock() {
         if (s_gameState == GameState.LOCKED) revert DiceGame__GameClosed();
@@ -188,6 +194,9 @@ contract DiceGame is VRFConsumerBaseV2Plus {
         uint8 rolledNumber = uint8((randomWords[0] % 6) + 1);
         if (rolledNumber == s_predictedNumber) {
             uint256 winningAmount = (s_bet * MULTIPLIER) / MULTIPLIER_PRECISION;
+            uint256 amountToGetFromPool = winningAmount - s_bet;
+            ILiquidityPool(s_liquidityPool).getWinningAmountDifference(amountToGetFromPool);
+            
             (bool success,) = s_currentPlayer.call{value: winningAmount}("");
             if (!success) {
                 revert DiceGame__TransferFailed();
@@ -209,6 +218,8 @@ contract DiceGame is VRFConsumerBaseV2Plus {
             emit PlayerLost(s_currentPlayer, s_bet, rolledNumber);
         }
     }
+
+    receive() external payable onlyLiquidityPool {}
 
     /* External View Getter Functions */
 
