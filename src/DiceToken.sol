@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.24;
 
 import {ERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
@@ -83,15 +83,8 @@ contract DiceToken is ERC20 {
         _;
     }
 
-    /**
-     *
-     * @param _liquidityPool Address of the liquidity Pool
-     */
-    constructor(address _liquidityPool) ERC20("DiceToken", "DICE") {
-        if (_liquidityPool == address(0)) {
-            revert DiceToken__InvalidAddress();
-        }
-        i_liquidityPool = _liquidityPool;
+    constructor() ERC20("DiceToken", "DICE") {
+        i_liquidityPool = msg.sender;
     }
 
     /**

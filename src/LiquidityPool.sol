@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.24;
 
 import {DiceToken} from "./DiceToken.sol";
 
@@ -101,13 +101,13 @@ contract LiquidityPool {
         s_lock = Lock.UNLOCKED;
     }
 
-    constructor(address _diceGameAddress, address _liquidityToken) {
+    constructor(address _diceGameAddress) {
         if (_diceGameAddress == address(0)) {
             revert LiquidityPool__InvalidAddress();
         }
         i_diceGame = _diceGameAddress;
-        i_liquidityToken = DiceToken(_liquidityToken);
-        s_lock = Lock.LOCKED;
+        i_liquidityToken = new DiceToken();
+        s_lock = Lock.UNLOCKED;
     }
 
     function addLiquidity() external payable lock {

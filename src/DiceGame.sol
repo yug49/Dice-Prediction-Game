@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.24;
 
 import {VRFConsumerBaseV2Plus} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
@@ -8,7 +8,6 @@ import {VRFV2PlusClient} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8//vrf/dev/libraries/VRFV2PlusClient.sol";
 import {IVRFCoordinatorV2Plus} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
-import {LiquidityPool} from "./LiquidityPool.sol";
 
 /**
  * @title DiceGame
@@ -75,6 +74,8 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     error DiceGame__TransferFailed();
     error DiceGame__InvalidPrediction();
     error DiceGame__GameFailed();
+    error DiceGame__LiquidityPoolAlreadySetCannotBeChanged();
+    error DiceGame__InvalidAddress();
 
     enum GameState {
         OPEN,
@@ -90,8 +91,8 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     bytes32 private immutable i_gasLane;
     uint256 private immutable i_subscriptionId; //39479495189486144213615272566875887764374593789286701718854749990062729762837
     uint32 private immutable i_callBackGasLimit;
-    address private immutable i_liquidityPool; // Address of the liquidity pool contract
 
+    address private s_liquidityPool; // Address of the liquidity pool contract
     IVRFCoordinatorV2Plus private immutable i_vrfCoordinator;
     GameState private s_gameState;
     mapping(address => uint256) private s_playersScores;
@@ -120,15 +121,13 @@ contract DiceGame is VRFConsumerBaseV2Plus {
      * @param _gasLane Gas lane key hash
      * @param _subscriptionId Subscription ID for VRF
      * @param _callBackGasLimit Callback gas limit for VRF
-     * @param _liquidityPool Liquidity pool address
      */
     constructor(
         uint256 _minBet,
         address _vrfCoordinator,
         bytes32 _gasLane,
         uint256 _subscriptionId,
-        uint32 _callBackGasLimit,
-        address _liquidityPool
+        uint32 _callBackGasLimit
     ) VRFConsumerBaseV2Plus(_vrfCoordinator) {
         if (_minBet == 0) revert DiceGame__ZeroValueNotAllowed();
         i_minBet = _minBet;
@@ -137,7 +136,16 @@ contract DiceGame is VRFConsumerBaseV2Plus {
         i_gasLane = _gasLane;
         i_subscriptionId = _subscriptionId;
         i_callBackGasLimit = _callBackGasLimit;
-        i_liquidityPool = _liquidityPool;
+    }
+
+    function setLiquidityPool(address _liquidityPool) external {
+        if (_liquidityPool == address(0)) revert DiceGame__InvalidAddress();
+
+        if (s_liquidityPool == address(0)) {
+            s_liquidityPool = _liquidityPool;
+        } else {
+            revert DiceGame__LiquidityPoolAlreadySetCannotBeChanged();
+        }
     }
 
     /**
@@ -185,11 +193,14 @@ contract DiceGame is VRFConsumerBaseV2Plus {
                 revert DiceGame__TransferFailed();
             }
             if (s_playersScores[s_currentPlayer] == 0) s_players.push(s_currentPlayer);
-            s_playersScores[s_currentPlayer]++;
+            
+            unchecked {
+                s_playersScores[s_currentPlayer]++;
+            }
 
             emit PlayerWon(s_currentPlayer, s_bet, winningAmount, rolledNumber);
         } else {
-            (bool success,) = payable(i_liquidityPool).call{value: s_bet}(abi.encodeWithSignature("addToRewards()"));
+            (bool success,) = payable(s_liquidityPool).call{value: s_bet}(abi.encodeWithSignature("addToRewards()"));
 
             if (!success) {
                 revert DiceGame__TransferFailed();
@@ -200,6 +211,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     }
 
     /* External View Getter Functions */
+
     function getPlayers() external view returns (address[] memory) {
         return s_players;
     }
@@ -209,7 +221,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     }
 
     function getLiquidityPool() external view returns (address) {
-        return i_liquidityPool;
+        return s_liquidityPool;
     }
 
     function getMinBet() external view returns (uint256) {
