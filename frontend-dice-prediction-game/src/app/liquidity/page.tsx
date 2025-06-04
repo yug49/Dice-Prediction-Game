@@ -3,8 +3,17 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePrivy, useConnectOrCreateWallet } from '@privy-io/react-auth';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLiquidityPool } from '../../hooks/useLiquidityPool';
 import { useLiquidityPoolActions } from '../../hooks/useLiquidityPoolActions';
+import {
+  LoadingSpinner,
+  AnimatedButton,
+  AnimatedCard,
+  AnimatedCounter,
+  NotificationToast,
+  AnimatedLink
+} from '../../components/AnimatedComponents';
 
 export default function LiquidityPage() {
   const [addAmount, setAddAmount] = useState<string>('');
@@ -143,132 +152,304 @@ export default function LiquidityPage() {
 
   // If wallet is connected, show the liquidity interface
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100">
+    <motion.div 
+      className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <main className="container mx-auto px-4 py-8">
         {/* Notification */}
-        {notification && (
-          <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-            notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-          }`}>
-            {notification.message}
-          </div>
-        )}
+        <AnimatePresence>
+          {notification && (
+            <NotificationToast
+              message={notification.message}
+              type={notification.type}
+              onClose={() => setNotification(null)}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Back Button */}
-        <div className="mb-6">
-          <Link 
+        <motion.div 
+          className="mb-6"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <AnimatedLink
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+            variant="secondary"
+            size="medium"
           >
             ← Back to Game
-          </Link>
-        </div>
+          </AnimatedLink>
+        </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">💰 Liquidity Pool</h1>
-            <p className="text-gray-600 text-lg">Provide liquidity and earn rewards from player losses</p>
-          </div>
+          {/* Header */}
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.h1 
+              className="text-4xl font-bold text-gray-800 mb-2"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              💰 Liquidity Pool
+            </motion.h1>
+            <motion.p 
+              className="text-gray-600 text-lg"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              Provide liquidity and earn rewards from player losses
+            </motion.p>
+          </motion.div>
 
           {/* Connection Status Check */}
           {!isAuthenticated && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8">
+            <motion.div 
+              className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
               <p className="text-yellow-700">⚠️ Wallet not authenticated. Please connect your wallet first.</p>
-            </div>
+            </motion.div>
           )}
 
           {/* Loading State */}
           {dataLoading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg">Loading pool data...</p>
-            </div>
+            <motion.div 
+              className="text-center py-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <LoadingSpinner size="lg" />
+              <motion.p 
+                className="text-gray-600 text-lg mt-4"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                Loading pool data...
+              </motion.p>
+            </motion.div>
           )}
 
           {/* Error State */}
           {dataError && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
+            <motion.div 
+              className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
               <p className="text-red-600">Error loading pool data. Please refresh the page.</p>
-            </div>
+            </motion.div>
           )}
 
           {/* Pool Overview */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Pool Overview</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl">
+          <motion.div 
+            className="bg-white rounded-3xl shadow-2xl p-8 mb-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <motion.h2 
+              className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              Pool Overview
+            </motion.h2>
+            <motion.div 
+              className="grid md:grid-cols-2 gap-6"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
+            >
+              <motion.div 
+                className="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl"
+                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
-                    {dataLoading ? '...' : `${parseFloat(totalLiquidity).toFixed(4)} ETH`}
+                    {dataLoading ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <AnimatedCounter 
+                        value={parseFloat(totalLiquidity)} 
+                        duration={1000}
+                      />
+                    )} ETH
                   </div>
                   <div className="text-gray-600">Total Pool Liquidity</div>
                 </div>
-              </div>
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-100 p-6 rounded-xl">
+              </motion.div>
+              <motion.div 
+                className="bg-gradient-to-br from-blue-50 to-cyan-100 p-6 rounded-xl"
+                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-2">
-                    {dataLoading ? '...' : `${parseFloat(userDiceTokens).toFixed(4)} DICE`}
+                    {dataLoading ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <AnimatedCounter 
+                        value={parseFloat(userDiceTokens)} 
+                        duration={1000}
+                      />
+                    )} DICE
                   </div>
                   <div className="text-gray-600">Your DICE Tokens</div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Your Position */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Your Position</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-purple-50 to-pink-100 p-6 rounded-xl">
+          <motion.div 
+            className="bg-white rounded-3xl shadow-2xl p-8 mb-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            <motion.h2 
+              className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.1 }}
+            >
+              Your Position
+            </motion.h2>
+            <motion.div 
+              className="grid md:grid-cols-2 gap-6"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.2 }}
+            >
+              <motion.div 
+                className="bg-gradient-to-br from-purple-50 to-pink-100 p-6 rounded-xl"
+                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-purple-600 mb-2">
-                    {dataLoading ? '...' : `${parseFloat(userContribution).toFixed(4)} ETH`}
+                    {dataLoading ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <AnimatedCounter 
+                        value={parseFloat(userContribution)} 
+                        duration={1000}
+                      />
+                    )} ETH
                   </div>
                   <div className="text-gray-600">Your Contribution</div>
                 </div>
-              </div>
-              <div className="bg-gradient-to-br from-yellow-50 to-orange-100 p-6 rounded-xl">
+              </motion.div>
+              <motion.div 
+                className="bg-gradient-to-br from-yellow-50 to-orange-100 p-6 rounded-xl"
+                whileHover={{ scale: 1.02, y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-orange-600 mb-2">
-                    {dataLoading ? '...' : `${poolSharePercentage}%`}
+                    {dataLoading ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <AnimatedCounter 
+                        value={parseFloat(poolSharePercentage)} 
+                        duration={1000}
+                      />
+                    )}%
                   </div>
                   <div className="text-gray-600">Pool Share</div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Transaction Status */}
           {transactionHash && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
-              <div className="text-center">
-                <p className="text-blue-800 font-medium">Transaction Submitted</p>
+            <motion.div 
+              className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 300 }}
+            >
+              <motion.div 
+                className="text-center"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <motion.p 
+                  className="text-blue-800 font-medium"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  Transaction Submitted
+                </motion.p>
                 <p className="text-blue-600 text-sm mt-1">
                   Hash: {transactionHash.slice(0, 10)}...{transactionHash.slice(-8)}
                 </p>
-                <a 
+                <motion.a 
                   href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:text-blue-700 text-sm underline mt-2 inline-block"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   View on Etherscan
-                </a>
-              </div>
-            </div>
+                </motion.a>
+              </motion.div>
+            </motion.div>
           )}
 
           {/* Liquidity Actions */}
-          <div className="grid md:grid-cols-2 gap-8">
+          <motion.div 
+            className="grid md:grid-cols-2 gap-8"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.3 }}
+          >
             {/* Add Liquidity */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">💧 Add Liquidity</h2>
+            <motion.div 
+              className="bg-white rounded-3xl shadow-2xl p-8"
+              whileHover={{ y: -5, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.h2 
+                className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.4 }}
+              >
+                💧 Add Liquidity
+              </motion.h2>
               
-              <div className="mb-6">
+              <motion.div 
+                className="mb-6"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.5 }}
+              >
                 <label className="block text-lg font-medium text-gray-700 mb-3">
                   Amount (ETH)
                 </label>
-                <input
+                <motion.input
                   type="number"
                   value={addAmount}
                   onChange={(e) => setAddAmount(e.target.value)}
@@ -276,10 +457,17 @@ export default function LiquidityPage() {
                   step="0.001"
                   min="0"
                   className="w-full px-4 py-4 text-lg text-center border-2 border-gray-300 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 font-mono"
+                  whileFocus={{ scale: 1.02, borderColor: "#10b981" }}
+                  transition={{ duration: 0.2 }}
                 />
-              </div>
+              </motion.div>
 
-              <div className="mb-6 p-4 bg-green-50 rounded-xl">
+              <motion.div 
+                className="mb-6 p-4 bg-green-50 rounded-xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.6 }}
+              >
                 <div className="text-sm text-gray-600 space-y-1">
                   <div className="flex justify-between">
                     <span>You will spend:</span>
@@ -298,40 +486,67 @@ export default function LiquidityPage() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <button
-                onClick={handleAddLiquidity}
-                className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-lg font-semibold rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={!addAmount || parseFloat(addAmount) <= 0 || isAddingLiquidity || isWritePending || isConfirming || !isAuthenticated}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.7 }}
               >
-                {!isAuthenticated ? (
-                  'Connect Wallet First'
-                ) : isAddingLiquidity || isWritePending ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Preparing Transaction...
-                  </div>
-                ) : isConfirming ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Confirming...
-                  </div>
-                ) : (
-                  'Add Liquidity'
-                )}
-              </button>
-            </div>
+                <AnimatedButton
+                  onClick={handleAddLiquidity}
+                  variant="success"
+                  className="w-full py-4 text-lg font-semibold"
+                  disabled={!addAmount || parseFloat(addAmount) <= 0 || isAddingLiquidity || isWritePending || isConfirming || !isAuthenticated}
+                >
+                  {!isAuthenticated ? (
+                    'Connect Wallet First'
+                  ) : isAddingLiquidity || isWritePending ? (
+                    <div className="flex items-center justify-center">
+                      <div className="mr-2">
+                        <LoadingSpinner size="sm" />
+                      </div>
+                      Preparing Transaction...
+                    </div>
+                  ) : isConfirming ? (
+                    <div className="flex items-center justify-center">
+                      <div className="mr-2">
+                        <LoadingSpinner size="sm" />
+                      </div>
+                      Confirming...
+                    </div>
+                  ) : (
+                    'Add Liquidity'
+                  )}
+                </AnimatedButton>
+              </motion.div>
+            </motion.div>
 
             {/* Remove Liquidity */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">💸 Remove Liquidity</h2>
+            <motion.div 
+              className="bg-white rounded-3xl shadow-2xl p-8"
+              whileHover={{ y: -5, scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.h2 
+                className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.4 }}
+              >
+                💸 Remove Liquidity
+              </motion.h2>
               
-              <div className="mb-6">
+              <motion.div 
+                className="mb-6"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.5 }}
+              >
                 <label className="block text-lg font-medium text-gray-700 mb-3">
                   Amount (ETH)
                 </label>
-                <input
+                <motion.input
                   type="number"
                   value={removeAmount}
                   onChange={(e) => setRemoveAmount(e.target.value)}
@@ -340,10 +555,17 @@ export default function LiquidityPage() {
                   min="0"
                   max={userContribution}
                   className="w-full px-4 py-4 text-lg text-center border-2 border-gray-300 rounded-xl focus:border-red-500 focus:outline-none transition-colors bg-gray-50 font-mono"
+                  whileFocus={{ scale: 1.02, borderColor: "#ef4444" }}
+                  transition={{ duration: 0.2 }}
                 />
-              </div>
+              </motion.div>
 
-              <div className="mb-6 p-4 bg-red-50 rounded-xl">
+              <motion.div 
+                className="mb-6 p-4 bg-red-50 rounded-xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.6 }}
+              >
                 <div className="text-sm text-gray-600 space-y-1">
                   <div className="flex justify-between">
                     <span>You will burn:</span>
@@ -358,53 +580,90 @@ export default function LiquidityPage() {
                     <span className="font-semibold">{userContribution} ETH</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <button
-                onClick={handleRemoveLiquidity}
-                className="w-full py-4 bg-gradient-to-r from-red-500 to-rose-600 text-white text-lg font-semibold rounded-xl hover:from-red-600 hover:to-rose-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={!removeAmount || parseFloat(removeAmount) <= 0 || parseFloat(removeAmount) > parseFloat(userContribution) || isRemovingLiquidity || isWritePending || isConfirming}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1.7 }}
               >
-                {isRemovingLiquidity || isWritePending ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Preparing Transaction...
-                  </div>
-                ) : isConfirming ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Confirming...
-                  </div>
-                ) : (
-                  'Remove Liquidity'
-                )}
-              </button>
-            </div>
-          </div>
+                <AnimatedButton
+                  onClick={handleRemoveLiquidity}
+                  variant="warning"
+                  className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700"
+                  disabled={!removeAmount || parseFloat(removeAmount) <= 0 || parseFloat(removeAmount) > parseFloat(userContribution) || isRemovingLiquidity || isWritePending || isConfirming}
+                >
+                  {isRemovingLiquidity || isWritePending ? (
+                    <div className="flex items-center justify-center">
+                      <div className="mr-2">
+                        <LoadingSpinner size="sm" />
+                      </div>
+                      Preparing Transaction...
+                    </div>
+                  ) : isConfirming ? (
+                    <div className="flex items-center justify-center">
+                      <div className="mr-2">
+                        <LoadingSpinner size="sm" />
+                      </div>
+                      Confirming...
+                    </div>
+                  ) : (
+                    'Remove Liquidity'
+                  )}
+                </AnimatedButton>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* How it Works */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 mt-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">📚 How it Works</h2>
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div className="p-4">
-                <div className="text-4xl mb-3">💰</div>
-                <h3 className="font-semibold text-gray-800 mb-2">Provide Liquidity</h3>
-                <p className="text-gray-600 text-sm">Add ETH to the pool and receive DICE tokens representing your share</p>
-              </div>
-              <div className="p-4">
-                <div className="text-4xl mb-3">🎲</div>
-                <h3 className="font-semibold text-gray-800 mb-2">Earn from Losses</h3>
-                <p className="text-gray-600 text-sm">When players lose their bets, the money gets added to the pool</p>
-              </div>
-              <div className="p-4">
-                <div className="text-4xl mb-3">📈</div>
-                <h3 className="font-semibold text-gray-800 mb-2">Automatic Rebase</h3>
-                <p className="text-gray-600 text-sm">DICE tokens automatically rebase to reflect your growing share of the pool</p>
-              </div>
-            </div>
-          </div>
+          <motion.div 
+            className="bg-white rounded-3xl shadow-2xl p-8 mt-8"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.8 }}
+          >
+            <motion.h2 
+              className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.9 }}
+            >
+              📚 How it Works
+            </motion.h2>
+            <motion.div 
+              className="grid md:grid-cols-3 gap-6 text-center"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 2.0 }}
+            >
+              {[
+                { icon: '💰', title: 'Provide Liquidity', description: 'Add ETH to the pool and receive DICE tokens representing your share', delay: 2.1 },
+                { icon: '🎲', title: 'Earn from Losses', description: 'When players lose their bets, the money gets added to the pool', delay: 2.2 },
+                { icon: '📈', title: 'Automatic Rebase', description: 'DICE tokens automatically rebase to reflect your growing share of the pool', delay: 2.3 }
+              ].map((step, index) => (
+                <motion.div 
+                  key={index}
+                  className="p-4"
+                  initial={{ y: 30, opacity: 0, scale: 0.8 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: step.delay }}
+                  whileHover={{ y: -5, scale: 1.05 }}
+                >
+                  <motion.div 
+                    className="text-4xl mb-3"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {step.icon}
+                  </motion.div>
+                  <h3 className="font-semibold text-gray-800 mb-2">{step.title}</h3>
+                  <p className="text-gray-600 text-sm">{step.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }

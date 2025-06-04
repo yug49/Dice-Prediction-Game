@@ -3,9 +3,17 @@
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount, useReadContract } from 'wagmi';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLeaderboard } from '../../hooks/useLeaderboard';
 import { chainsToTSender, diceGameAbi } from '../../constants';
 import { sepolia } from 'wagmi/chains';
+import {
+  LoadingSpinner,
+  AnimatedButton,
+  AnimatedCard,
+  AnimatedCounter,
+  AnimatedLink
+} from '../../components/AnimatedComponents';
 
 export default function LeaderboardPage() {
   const { ready, authenticated, connectOrCreateWallet, user } = usePrivy();
@@ -65,84 +73,187 @@ export default function LeaderboardPage() {
   // Show wallet connection prompt if not authenticated
   if (!authenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100">
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
-          <div className="mb-6">
-            <Link 
+          <motion.div 
+            className="mb-6"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <AnimatedLink
               href="/"
-              className="inline-flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+              variant="secondary"
+              size="medium"
             >
               ← Back to Game
-            </Link>
-          </div>
+            </AnimatedLink>
+          </motion.div>
 
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-3xl shadow-2xl p-12">
-              <div className="text-6xl mb-6">🏆</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                Leaderboard
-              </h1>
-              <p className="text-gray-600 text-lg mb-8">
-                Connect your wallet to view the leaderboard and see where you rank among other players!
-              </p>
-              <button
-                onClick={connectOrCreateWallet}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+          <motion.div 
+            className="max-w-2xl mx-auto text-center"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <AnimatedCard className="p-12">
+              <motion.div 
+                className="text-6xl mb-6"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.8, delay: 0.4, type: "spring", stiffness: 200 }}
+                whileHover={{ 
+                  scale: 1.2,
+                  rotate: [0, -10, 10, 0],
+                  transition: { duration: 0.5 }
+                }}
               >
-                Connect Wallet to View Leaderboard
-              </button>
-            </div>
-          </div>
+                🏆
+              </motion.div>
+              <motion.h1 
+                className="text-3xl font-bold text-gray-800 mb-4"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                Leaderboard
+              </motion.h1>
+              <motion.p 
+                className="text-gray-600 text-lg mb-8"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+              >
+                Connect your wallet to view the leaderboard and see where you rank among other players!
+              </motion.p>
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                <AnimatedButton
+                  onClick={connectOrCreateWallet}
+                  variant="primary"
+                  size="large"
+                  className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  Connect Wallet to View Leaderboard
+                </AnimatedButton>
+              </motion.div>
+            </AnimatedCard>
+          </motion.div>
         </main>
-      </div>
+      </motion.div>
     );
   }
 
   // Show loading while data is being fetched
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading leaderboard...</p>
-        </div>
-      </div>
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="text-center"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <LoadingSpinner size="lg" />
+          <motion.p 
+            className="text-gray-600 text-lg mt-4"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Loading leaderboard...
+          </motion.p>
+        </motion.div>
+      </motion.div>
     );
   }
 
   // Show error if there's an issue
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100">
+      <motion.div 
+        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <main className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <Link 
+          <motion.div 
+            className="mb-6"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <AnimatedLink
               href="/"
-              className="inline-flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+              variant="secondary"
+              size="medium"
             >
               ← Back to Game
-            </Link>
-          </div>
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-3xl shadow-2xl p-12">
-              <div className="text-6xl mb-6">⚠️</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                Error Loading Leaderboard
-              </h1>
-              <p className="text-gray-600 text-lg mb-8">
-                {error}
-              </p>
-              <button
-                onClick={refetch}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            </AnimatedLink>
+          </motion.div>
+          <motion.div 
+            className="max-w-2xl mx-auto text-center"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <AnimatedCard className="p-12">
+              <motion.div 
+                className="text-6xl mb-6"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4, type: "spring", stiffness: 200 }}
               >
-                Try Again
-              </button>
-            </div>
-          </div>
+                ⚠️
+              </motion.div>
+              <motion.h1 
+                className="text-3xl font-bold text-gray-800 mb-4"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                Error Loading Leaderboard
+              </motion.h1>
+              <motion.p 
+                className="text-gray-600 text-lg mb-8"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                {error}
+              </motion.p>
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+              >
+                <AnimatedButton
+                  onClick={refetch}
+                  variant="primary"
+                  size="large"
+                >
+                  Try Again
+                </AnimatedButton>
+              </motion.div>
+            </AnimatedCard>
+          </motion.div>
         </main>
-      </div>
+      </motion.div>
     );
   }
 
@@ -171,139 +282,430 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100">
+    <motion.div 
+      className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <main className="container mx-auto px-4 py-8">
         {/* Back Button */}
-        <div className="mb-6">
-          <Link 
+        <motion.div 
+          className="mb-6"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <AnimatedLink
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+            variant="secondary"
+            size="medium"
           >
             ← Back to Game
-          </Link>
-        </div>
+          </AnimatedLink>
+        </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">🏆 Leaderboard</h1>
-            <p className="text-gray-600 text-lg">Top players ranked by their total scores</p>
-          </div>
+          {/* Header */}
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.h1 
+              className="text-4xl font-bold text-gray-800 mb-2"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              🏆 Leaderboard
+            </motion.h1>
+            <motion.p 
+              className="text-gray-600 text-lg"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              Top players ranked by their total scores
+            </motion.p>
+          </motion.div>
 
           {/* Current Player Position */}
           {currentPlayer && (
-            <div className="bg-white rounded-3xl shadow-2xl p-6 mb-8 border-2 border-blue-300">
-              <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Your Position</h2>
-                <div className="flex items-center justify-center gap-4">
-                  <div className={`text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${getPositionColor(currentPlayer.position)}`}>
+            <motion.div 
+              className="bg-white rounded-3xl shadow-2xl p-6 mb-8 border-2 border-blue-300"
+              initial={{ y: 30, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+            >
+              <motion.div 
+                className="text-center"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <motion.h2 
+                  className="text-xl font-semibold text-gray-800 mb-4"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                >
+                  Your Position
+                </motion.h2>
+                <motion.div 
+                  className="flex items-center justify-center gap-4"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                >
+                  <motion.div 
+                    className={`text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${getPositionColor(currentPlayer.position)}`}
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ duration: 0.6, delay: 0.9, type: "spring", stiffness: 200 }}
+                  >
                     {getPositionIcon(currentPlayer.position)}
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-800">{currentPlayer.score} points</div>
+                  </motion.div>
+                  <motion.div
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.0 }}
+                  >
+                    <div className="text-2xl font-bold text-gray-800">
+                      <AnimatedCounter value={currentPlayer.score} duration={1000} /> points
+                    </div>
                     <div className="text-gray-600">{formatAddress(currentPlayer.address)}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
           )}
 
           {/* Current Player Score - Always Show */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl shadow-2xl p-6 mb-8 text-white">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-4">Your Score</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-white/20 rounded-xl p-4">
+          <motion.div 
+            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl shadow-2xl p-6 mb-8 text-white"
+            initial={{ y: 30, opacity: 0, scale: 0.95 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
+            <motion.div 
+              className="text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+            >
+              <motion.h2 
+                className="text-xl font-semibold mb-4"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                Your Score
+              </motion.h2>
+              <motion.div 
+                className="grid md:grid-cols-2 gap-4"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+              >
+                <motion.div 
+                  className="bg-white/20 rounded-xl p-4 hover:bg-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <div className="text-sm opacity-90 mb-1">Wallet Address</div>
                   <div className="font-mono text-lg font-semibold">
                     {effectiveAddress && authenticated ? formatAddress(effectiveAddress) : 'Not Connected'}
                   </div>
-                </div>
-                <div className="bg-white/20 rounded-xl p-4">
+                </motion.div>
+                <motion.div 
+                  className="bg-white/20 rounded-xl p-4 hover:bg-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <div className="text-sm opacity-90 mb-1">Your Score</div>
                   <div className="text-2xl font-bold">
-                    {currentUserScore ? Number(currentUserScore) : 0} points
+                    <AnimatedCounter value={currentUserScore ? Number(currentUserScore) : 0} duration={1000} /> points
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* Leaderboard */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
-              <h2 className="text-2xl font-semibold text-white text-center">Top Players</h2>
-            </div>
+          <motion.div 
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            <motion.div 
+              className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.1 }}
+            >
+              <motion.h2 
+                className="text-2xl font-semibold text-white text-center"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+              >
+                Top Players
+              </motion.h2>
+            </motion.div>
             
             <div className="divide-y divide-gray-200">
               {players.map((player, index) => (
-                <div 
+                <motion.div 
                   key={player.address} 
                   className={`p-6 transition-colors hover:bg-gray-50 ${
-                    player.address.toLowerCase() === effectiveAddress?.toLowerCase() ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                    player.address.toLowerCase() === effectiveAddress?.toLowerCase() ? 'bg-blue-50 border-l-4 border-blue-500 hover:bg-blue-100' : 'hover:bg-gray-100'
                   }`}
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 1.3 + (index * 0.1),
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  whileHover={{ 
+                    x: 10,
+                    transition: { duration: 0.2 }
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className={`text-2xl font-bold ${player.position <= 3 ? 'text-3xl' : 'text-gray-600'}`}>
+                      <motion.div 
+                        className={`text-2xl font-bold ${player.position <= 3 ? 'text-3xl' : 'text-gray-600'}`}
+                        initial={{ scale: 0, rotate: -90 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ 
+                          duration: 0.5, 
+                          delay: 1.4 + (index * 0.1),
+                          type: "spring",
+                          stiffness: 200
+                        }}
+                        whileHover={{ 
+                          scale: 1.2,
+                          rotate: 10,
+                          transition: { duration: 0.2 }
+                        }}
+                      >
                         {getPositionIcon(player.position)}
-                      </div>
-                      <div>
+                      </motion.div>
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 1.5 + (index * 0.1) }}
+                      >
                         <div className="font-mono text-lg font-semibold text-gray-800">
                           {formatAddress(player.address)}
                           {player.address.toLowerCase() === effectiveAddress?.toLowerCase() && (
-                            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            <motion.span 
+                              className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ 
+                                duration: 0.3, 
+                                delay: 1.6 + (index * 0.1),
+                                type: "spring",
+                                stiffness: 300
+                              }}
+                            >
                               You
-                            </span>
+                            </motion.span>
                           )}
                         </div>
                         <div className="text-gray-600 text-sm">
                           Position #{player.position}
                         </div>
-                      </div>
+                      </motion.div>
                     </div>
-                    <div className="text-right">
+                    <motion.div 
+                      className="text-right"
+                      initial={{ x: 30, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.5, delay: 1.5 + (index * 0.1) }}
+                    >
                       <div className="text-2xl font-bold text-gray-800">
-                        {player.score}
+                        <AnimatedCounter value={player.score} duration={1000} />
                       </div>
                       <div className="text-gray-600 text-sm">
                         points
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">{stats.totalPlayers}</div>
-              <div className="text-gray-600">Total Players</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">{stats.highestScore}</div>
-              <div className="text-gray-600">Highest Score</div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">{stats.averageScore}</div>
-              <div className="text-gray-600">Average Score</div>
-            </div>
-          </div>
+          <motion.div 
+            className="grid md:grid-cols-3 gap-6 mt-8"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.8 }}
+          >
+            <motion.div 
+              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              initial={{ y: 30, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 1.9 }}
+              whileHover={{ 
+                y: -10, 
+                scale: 1.05,
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                transition: { duration: 0.3 }
+              }}
+            >
+              <motion.div 
+                className="text-3xl font-bold text-purple-600 mb-2"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 2.0, type: "spring", stiffness: 200 }}
+              >
+                <AnimatedCounter value={stats.totalPlayers} duration={1000} />
+              </motion.div>
+              <motion.div 
+                className="text-gray-600"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 2.1 }}
+              >
+                Total Players
+              </motion.div>
+            </motion.div>
+            
+            <motion.div 
+              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              initial={{ y: 30, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 2.0 }}
+              whileHover={{ 
+                y: -10, 
+                scale: 1.05,
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                transition: { duration: 0.3 }
+              }}
+            >
+              <motion.div 
+                className="text-3xl font-bold text-green-600 mb-2"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 2.1, type: "spring", stiffness: 200 }}
+              >
+                <AnimatedCounter value={stats.highestScore} duration={1000} />
+              </motion.div>
+              <motion.div 
+                className="text-gray-600"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 2.2 }}
+              >
+                Highest Score
+              </motion.div>
+            </motion.div>
+            
+            <motion.div 
+              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              initial={{ y: 30, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 2.1 }}
+              whileHover={{ 
+                y: -10, 
+                scale: 1.05,
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                transition: { duration: 0.3 }
+              }}
+            >
+              <motion.div 
+                className="text-3xl font-bold text-blue-600 mb-2"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 2.2, type: "spring", stiffness: 200 }}
+              >
+                <AnimatedCounter value={stats.averageScore} duration={1000} />
+              </motion.div>
+              <motion.div 
+                className="text-gray-600"
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 2.3 }}
+              >
+                Average Score
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           {/* How Scoring Works */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 mt-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">📊 How Scoring Works</h2>
-            <div className="flex justify-center">
-              <div className="p-4 text-center">
-                <div className="text-4xl mb-3">🎯</div>
-                <h3 className="font-semibold text-gray-800 mb-2">Correct Prediction</h3>
-                <p className="text-gray-600 text-sm">+1 point for each successful dice prediction</p>
-              </div>
-            </div>
-          </div>
+          <motion.div 
+            className="bg-white rounded-3xl shadow-2xl p-8 mt-8"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 2.4 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
+            <motion.h2 
+              className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 2.5 }}
+            >
+              📊 How Scoring Works
+            </motion.h2>
+            <motion.div 
+              className="flex justify-center"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6, delay: 2.6, type: "spring", stiffness: 150 }}
+            >
+              <motion.div 
+                className="p-4 text-center"
+                whileHover={{ 
+                  scale: 1.1,
+                  y: -10,
+                  transition: { duration: 0.3 }
+                }}
+              >
+                <motion.div 
+                  className="text-4xl mb-3"
+                  initial={{ rotate: -180, scale: 0 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 2.7, type: "spring", stiffness: 200 }}
+                  whileHover={{ 
+                    rotate: [0, -10, 10, 0],
+                    transition: { duration: 0.5 }
+                  }}
+                >
+                  🎯
+                </motion.div>
+                <motion.h3 
+                  className="font-semibold text-gray-800 mb-2"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 2.8 }}
+                >
+                  Correct Prediction
+                </motion.h3>
+                <motion.p 
+                  className="text-gray-600 text-sm"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 2.9 }}
+                >
+                  +1 point for each successful dice prediction
+                </motion.p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </main>
-    </div>
+    </motion.div>
   );
 }
