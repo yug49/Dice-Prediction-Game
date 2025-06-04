@@ -1,13 +1,13 @@
-import { useReadContract, useReadContracts } from 'wagmi';
+import { useReadContracts } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
-import { formatEther, parseEther } from 'viem';
+import { formatEther } from 'viem';
 import { chainsToTSender, liquidityPool } from '../constants';
 
 const useLiquidityPool = () => {
     const { ready, authenticated, user } = usePrivy();
-    const { address, isConnected } = useAccount();
+    const { address } = useAccount();
     
     // Get the effective address (prioritize wagmi address, fallback to privy)
     const effectiveAddress = address || user?.wallet?.address;

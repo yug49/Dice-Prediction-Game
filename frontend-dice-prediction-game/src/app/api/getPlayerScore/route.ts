@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       abi: diceGameAbi,
       functionName: 'getPlayerScore',
       args: [playerAddress as `0x${string}`],
-    });
+    }) as bigint;
 
     return NextResponse.json({ score: score.toString() });
   } catch (error) {

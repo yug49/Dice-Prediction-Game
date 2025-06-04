@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 const useWalletBalance = () => {
     const { ready, authenticated, user } = usePrivy();
-    const { address, isConnected } = useAccount();
+    const { address } = useAccount();
     
     // Get the effective address (prioritize wagmi address, fallback to privy)
     const effectiveAddress = address || user?.wallet?.address;

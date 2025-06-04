@@ -57,12 +57,12 @@ export const useDiceGameEvents = () => {
         
         try {
           // Type assertion for the log args
-          const eventArgs = (log as any).args as {
+          const eventArgs = (log as unknown as { args: {
             player: string;
             betAmount: bigint;
             winningAmount: bigint;
             rolledNumber: bigint;
-          };
+          } }).args;
           
           const { player, betAmount, winningAmount, rolledNumber } = eventArgs;
           console.log('🎉 Event args:', { player, betAmount, winningAmount, rolledNumber });
@@ -85,7 +85,7 @@ export const useDiceGameEvents = () => {
               betAmount: formatEther(betAmount),
               winningAmount: formatEther(winningAmount),
               rolledNumber: Number(rolledNumber),
-              transactionHash: (log as any).transactionHash || '',
+              transactionHash: (log as unknown as { transactionHash: string }).transactionHash || '',
               timestamp: Date.now(),
             };
 
@@ -119,11 +119,11 @@ export const useDiceGameEvents = () => {
         
         try {
           // Type assertion for the log args
-          const eventArgs = (log as any).args as {
+          const eventArgs = (log as unknown as { args: {
             player: string;
             betAmount: bigint;
             rolledNumber: bigint;
-          };
+          } }).args;
           
           const { player, betAmount, rolledNumber } = eventArgs;
           console.log('😔 Event args:', { player, betAmount, rolledNumber });
@@ -145,7 +145,7 @@ export const useDiceGameEvents = () => {
               type: 'lost',
               betAmount: formatEther(betAmount),
               rolledNumber: Number(rolledNumber),
-              transactionHash: (log as any).transactionHash || '',
+              transactionHash: (log as unknown as { transactionHash: string }).transactionHash || '',
               timestamp: Date.now(),
             };
 

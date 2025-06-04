@@ -8,7 +8,7 @@ const config = createConfig({
   chains: [sepolia],
   transports: {
     [sepolia.id]: http(
-      process.env.SEPOLIA_RPC_URL
+      process.env.SEPOLIA_RPC_URL!
     )
   },
   // Explicitly set ssr to false to prevent hydration issues

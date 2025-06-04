@@ -9,7 +9,6 @@ import { useLiquidityPoolActions } from '../../hooks/useLiquidityPoolActions';
 import {
   LoadingSpinner,
   AnimatedButton,
-  AnimatedCard,
   AnimatedCounter,
   NotificationToast,
   AnimatedLink
@@ -31,8 +30,7 @@ export default function LiquidityPage() {
     poolSharePercentage,
     isLoading: dataLoading,
     error: dataError,
-    refetch,
-    isWalletReady
+    refetch
   } = useLiquidityPool();
   
   // Contract actions hooks

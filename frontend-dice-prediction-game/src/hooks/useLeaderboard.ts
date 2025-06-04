@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useReadContract } from 'wagmi';
 import { chainsToTSender, diceGameAbi } from '../constants';
 import { sepolia } from 'wagmi/chains';
@@ -15,7 +15,7 @@ export interface LeaderboardStats {
   averageScore: number;
 }
 
-export const useLeaderboard = (currentUserAddress?: string) => {
+export const useLeaderboard = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [stats, setStats] = useState<LeaderboardStats>({
     totalPlayers: 0,

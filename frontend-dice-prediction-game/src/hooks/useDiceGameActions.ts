@@ -24,11 +24,11 @@ const useDiceGameActions = () => {
     });
 
     // Helper function to switch to Sepolia chain
-    const ensureCorrectChain = async (provider: any) => {
+    const ensureCorrectChain = async (provider: { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> }) => {
         try {
             // Get current chain ID
             const currentChainId = await provider.request({ method: 'eth_chainId' });
-            const currentChainIdDecimal = parseInt(currentChainId, 16);
+            const currentChainIdDecimal = parseInt(currentChainId as string, 16);
             
             // If already on Sepolia, return
             if (currentChainIdDecimal === sepolia.id) {
@@ -43,9 +43,9 @@ const useDiceGameActions = () => {
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${sepolia.id.toString(16)}` }],
                 });
-            } catch (switchError: any) {
+            } catch (switchError: unknown) {
                 // If the chain hasn't been added to the wallet, add it
-                if (switchError.code === 4902) {
+                if (switchError && typeof switchError === 'object' && 'code' in switchError && switchError.code === 4902) {
                     await provider.request({
                         method: 'wallet_addEthereumChain',
                         params: [

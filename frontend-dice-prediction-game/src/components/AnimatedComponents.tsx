@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 
 // Floating Dice Animation Component
-export const FloatingDice = ({ size = 60 }: { size?: number }) => {
+export const FloatingDice = () => {
   return (
     <motion.div
       className="inline-block"
@@ -38,7 +38,7 @@ export const AnimatedButton = ({
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'success' | 'warning';
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   const variants = {
     primary: 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700',
@@ -81,7 +81,7 @@ export const AnimatedCard = ({
   children: React.ReactNode;
   className?: string;
   delay?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   return (
     <motion.div
@@ -248,7 +248,6 @@ export const EmojiRain = ({
 // Animated Number Counter
 export const AnimatedCounter = ({ 
   value, 
-  duration = 1,
   className = ''
 }: {
   value: number;
@@ -359,7 +358,7 @@ export const AnimatedLink = ({
   variant?: 'primary' | 'secondary' | 'success' | 'warning';
   size?: 'small' | 'medium' | 'large';
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) => {
   const variants = {
     primary: 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700',

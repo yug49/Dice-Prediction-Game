@@ -1,9 +1,8 @@
 "use client";
 
-import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount, useReadContract } from 'wagmi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLeaderboard } from '../../hooks/useLeaderboard';
 import { chainsToTSender, diceGameAbi } from '../../constants';
 import { sepolia } from 'wagmi/chains';

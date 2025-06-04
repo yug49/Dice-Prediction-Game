@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePrivy, useConnectOrCreateWallet } from '@privy-io/react-auth';
-import { useMinBet, useDiceGameData } from '@/hooks/useMinBet';
+import { useDiceGameData } from '@/hooks/useMinBet';
 import { useDiceGameActions } from '@/hooks/useDiceGameActions';
 import { useDiceGameEvents } from '@/hooks/useDiceGameEvents';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,17 +37,12 @@ export default function Home() {
   const { connectOrCreateWallet } = useConnectOrCreateWallet();
   const { 
     minBetEth, 
-    minBetWei, 
     minBetLoading, 
     minBetError,
     multiplier,
-    mostRecentRoll,
     playerScore,
     isLoading: gameDataLoading,
     userAddress,
-    wagmiAddress,
-    privyAddress,
-    diceGameAddress,
     scoreLoading,
     scoreError,
     refetchScore
@@ -57,7 +52,6 @@ export default function Home() {
   const {
     rollDice,
     isRollingDice,
-    isWritePending,
     isConfirming,
     isConfirmed,
     writeError,
@@ -67,7 +61,7 @@ export default function Home() {
   } = useDiceGameActions();
 
   // Dice game events hook
-  const { latestResult, gameResults, clearLatestResult } = useDiceGameEvents();
+  const { latestResult, clearLatestResult } = useDiceGameEvents();
 
   // Debug logging for latestResult changes
   useEffect(() => {
@@ -145,11 +139,11 @@ export default function Home() {
         message: `🎲 Dice roll submitted! Transaction: ${hash.slice(0, 10)}...`, 
         type: 'success' 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Roll dice error:', error);
       setIsRollingAnimation(false); // Stop animation on error
       setNotification({ 
-        message: error.message || 'Failed to roll dice. Please try again.', 
+        message: error instanceof Error ? error.message : 'Failed to roll dice. Please try again.', 
         type: 'error' 
       });
     }
