@@ -248,4 +248,8 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     function getMostRecentRoll() external view returns (uint8) {
         return s_mostRecentRoll;
     }
+
+    function getMultiplier() external pure returns (uint16) {
+        return MULTIPLIER;
+    }
 }
