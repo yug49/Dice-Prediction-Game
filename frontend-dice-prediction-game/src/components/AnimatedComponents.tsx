@@ -228,16 +228,18 @@ export const DiceRollAnimation = ({
   isRolling, 
   currentFrame, 
   finalResult,
+  selectedNumber,
   size = 120
 }: { 
   isRolling: boolean;
   currentFrame: number;
   finalResult?: number;
+  selectedNumber?: number;
   size?: number;
 }) => {
   const diceImage = isRolling 
     ? `/Rolling-Dices/Rolling${currentFrame}.png`
-    : `/Static-Dices/Static${finalResult || 1}.png`;
+    : `/Static-Dices/Static${finalResult || selectedNumber || 1}.png`;
 
   return (
     <motion.div
@@ -265,15 +267,22 @@ export const DiceRollAnimation = ({
           ease: "linear"
         }}
         className="relative"
+        key={!isRolling ? (finalResult || selectedNumber) : 'rolling'} // Add key to trigger re-render when number changes
       >
-        <Image
-          src={diceImage}
-          alt={`Dice showing ${isRolling ? 'rolling' : finalResult || 1}`}
-          width={size}
-          height={size}
-          className="drop-shadow-2xl"
-          priority
-        />
+        <motion.div
+          initial={!isRolling && !finalResult ? { scale: 0.8, opacity: 0 } : false}
+          animate={!isRolling && !finalResult ? { scale: 1, opacity: 1 } : {}}
+          transition={{ duration: 0.3, ease: "backOut" }}
+        >
+          <Image
+            src={diceImage}
+            alt={`Dice showing ${isRolling ? 'rolling' : finalResult || selectedNumber || 1}`}
+            width={size}
+            height={size}
+            className="drop-shadow-2xl"
+            priority
+          />
+        </motion.div>
         {isRolling && (
           <motion.div
             className="absolute inset-0 rounded-lg bg-gradient-to-br from-blue-400/20 to-purple-600/20"

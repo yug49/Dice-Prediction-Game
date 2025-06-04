@@ -100,11 +100,11 @@ export default function Home() {
       setCurrentDiceFrame(frameIndex);
     }, 150);
 
-    // Stop animation after 3 seconds
+    // Stop animation after 25 seconds
     setTimeout(() => {
       clearInterval(frameInterval);
       setIsRollingAnimation(false);
-    }, 3000);
+    }, 25000);
   };
 
   // Stop dice rolling animation and show result
@@ -719,6 +719,7 @@ export default function Home() {
                 isRolling={isRollingAnimation} 
                 currentFrame={currentDiceFrame} 
                 finalResult={showDiceResult ? currentDiceFrame : undefined}
+                selectedNumber={prediction}
                 size={120}
               />
             </div>
