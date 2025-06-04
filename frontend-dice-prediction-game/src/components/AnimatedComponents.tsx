@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 // Floating Dice Animation Component
 export const FloatingDice = ({ size = 60 }: { size?: number }) => {
@@ -84,7 +85,7 @@ export const AnimatedCard = ({
 }) => {
   return (
     <motion.div
-      className={`bg-white rounded-2xl p-6 shadow-lg ${className}`}
+      className={`bg-blue-900/30 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-blue-300/20 ${className}`}
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay }}
@@ -134,15 +135,15 @@ export const NotificationToast = ({
   onClose: () => void;
 }) => {
   const variants = {
-    success: 'bg-green-100 border-green-300 text-green-800',
-    error: 'bg-red-100 border-red-300 text-red-800',
-    warning: 'bg-yellow-100 border-yellow-300 text-yellow-800',
-    info: 'bg-blue-100 border-blue-300 text-blue-800',
+    success: 'bg-green-900/30 backdrop-blur-md border-green-400/30 text-green-200',
+    error: 'bg-red-900/30 backdrop-blur-md border-red-400/30 text-red-200',
+    warning: 'bg-yellow-900/30 backdrop-blur-md border-yellow-400/30 text-yellow-200',
+    info: 'bg-blue-900/30 backdrop-blur-md border-blue-400/30 text-blue-200',
   };
 
   return (
     <motion.div
-      className={`p-4 rounded-xl shadow-lg border ${variants[type]}`}
+      className={`p-6 rounded-xl shadow-lg border ${variants[type]}`}
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -300, opacity: 0 }}
@@ -152,7 +153,7 @@ export const NotificationToast = ({
         <span className="font-medium">{message}</span>
         <motion.button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 ml-4"
+          className="text-white/70 hover:text-white ml-4"
           whileHover={{ scale: 1.2, rotate: 90 }}
           whileTap={{ scale: 0.8 }}
         >
@@ -190,6 +191,55 @@ export const ConfettiAnimation = () => {
             delay: Math.random() * 2
           }}
         />
+      ))}
+    </div>
+  );
+};
+
+// Emoji Rain Animation Component
+export const EmojiRain = ({ 
+  emoji, 
+  duration = 3500,
+  onComplete 
+}: {
+  emoji: string;
+  duration?: number;
+  onComplete?: () => void;
+}) => {
+  const emojiPieces = Array.from({ length: 30 }, (_, i) => i);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (onComplete) onComplete();
+    }, duration);
+    
+    return () => clearTimeout(timer);
+  }, [duration, onComplete]);
+  
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50">
+      {emojiPieces.map((piece) => (
+        <motion.div
+          key={piece}
+          className="absolute text-6xl"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: '-80px'
+          }}
+          initial={{ y: -80, rotate: 0, opacity: 1 }}
+          animate={{ 
+            y: typeof window !== 'undefined' ? window.innerHeight + 120 : 920,
+            rotate: 360,
+            opacity: [1, 1, 0.9, 0.7, 0]
+          }}
+          transition={{
+            duration: duration / 1000,
+            ease: "easeOut",
+            delay: Math.random() * 0.8
+          }}
+        >
+          {emoji}
+        </motion.div>
       ))}
     </div>
   );
@@ -319,9 +369,9 @@ export const AnimatedLink = ({
   };
 
   const sizes = {
-    small: 'px-4 py-2 text-sm',
-    medium: 'px-6 py-3 text-base',
-    large: 'px-8 py-4 text-lg',
+    small: 'px-6 py-3 text-sm',
+    medium: 'px-8 py-4 text-base',
+    large: 'px-10 py-5 text-lg',
   };
 
   return (

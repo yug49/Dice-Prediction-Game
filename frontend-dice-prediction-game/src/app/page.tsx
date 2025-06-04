@@ -7,10 +7,10 @@ import { useMinBet, useDiceGameData } from '@/hooks/useMinBet';
 import { useDiceGameActions } from '@/hooks/useDiceGameActions';
 import { useDiceGameEvents } from '@/hooks/useDiceGameEvents';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import { 
   DiceRollAnimation, 
   ConfettiAnimation, 
+  EmojiRain,
   AnimatedButton, 
   AnimatedCard, 
   LoadingSpinner,
@@ -31,6 +31,7 @@ export default function Home() {
   const [showDiceResult, setShowDiceResult] = useState<boolean>(false);
   const [currentDiceFrame, setCurrentDiceFrame] = useState<number>(1);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  const [showEmojiRain, setShowEmojiRain] = useState<{ show: boolean; emoji: string }>({ show: false, emoji: '' });
   
   const { ready, authenticated } = usePrivy();
   const { connectOrCreateWallet } = useConnectOrCreateWallet();
@@ -207,8 +208,9 @@ export default function Home() {
       stopDiceRollingAnimation(latestResult.rolledNumber);
       
       if (latestResult.type === 'won') {
-        // Show confetti for wins
+        // Show confetti and money emoji rain for wins
         setShowConfetti(true);
+        setShowEmojiRain({ show: true, emoji: '💸' });
         setTimeout(() => setShowConfetti(false), 5000);
         
         setNotification({ 
@@ -216,6 +218,9 @@ export default function Home() {
           type: 'success' 
         });
       } else {
+        // Show eggplant emoji rain for losses
+        setShowEmojiRain({ show: true, emoji: '🍆' });
+        
         setNotification({ 
           message: `😔 You lost. Rolled ${latestResult.rolledNumber}. Better luck next time!`, 
           type: 'error' 
@@ -252,7 +257,7 @@ export default function Home() {
   // Show loading state while Privy is initializing
   if (!ready) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <motion.div 
           className="text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -271,7 +276,7 @@ export default function Home() {
             <LoadingSpinner size="lg" color="purple" />
           </motion.div>
           <motion.p 
-            className="text-gray-600 text-lg"
+            className="text-white text-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
@@ -287,7 +292,7 @@ export default function Home() {
   if (!authenticated) {
     return (
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100"
+        className="min-h-screen"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -315,7 +320,7 @@ export default function Home() {
                 🎲
               </motion.div>
               <motion.h1 
-                className="text-6xl font-bold text-gray-800 mb-6"
+                className="text-6xl font-bold text-yellow-500 mb-6"
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -323,7 +328,7 @@ export default function Home() {
                 Dice Prediction Game
               </motion.h1>
               <motion.p 
-                className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed"
+                className="text-xl text-white mb-8 max-w-2xl mx-auto leading-relaxed"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -335,7 +340,7 @@ export default function Home() {
 
             {/* Connect Wallet CTA */}
             <motion.div 
-              className="bg-white rounded-3xl shadow-2xl p-12 mb-12 backdrop-blur-sm border border-white/20"
+              className="bg-blue-900/30 backdrop-blur-md rounded-3xl shadow-2xl p-12 mb-12 border border-blue-300/20"
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
@@ -348,8 +353,8 @@ export default function Home() {
               >
                 🔗
               </motion.div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Connect Your Wallet</h2>
-              <p className="text-gray-600 mb-8 text-lg">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-4">Connect Your Wallet</h2>
+              <p className="text-blue-100 mb-8 text-lg">
                 You need to connect your wallet to start playing the dice prediction game
               </p>
               <AnimatedButton
@@ -357,7 +362,7 @@ export default function Home() {
                 variant="primary"
                 className="px-12 py-4 text-xl font-bold"
               >
-                🎮 Connect Wallet & Start Playing
+                Connect Wallet & Start Playing
               </AnimatedButton>
             </motion.div>
 
@@ -371,7 +376,7 @@ export default function Home() {
               {[
                 { icon: '🎯', title: 'Predict & Win', description: 'Choose a number from 1-6, place your bet, and if you guess correctly, you win 2x your bet amount!' },
                 { icon: '💰', title: 'Liquidity Pool', description: 'Provide liquidity to the pool and earn rewards from player losses. Get DICE tokens representing your share.' },
-                { icon: '🏆', title: 'Leaderboard', description: 'Compete with other players and climb the leaderboard. Track your wins and see how you rank!' }
+                { icon: '🏆', title: 'On-Chain Leaderboard', description: 'Compete with other players and climb the leaderboard. Track your wins and see how you rank!' }
               ].map((feature, index) => (
                 <AnimatedCard 
                   key={index}
@@ -385,27 +390,45 @@ export default function Home() {
                   >
                     {feature.icon}
                   </motion.div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                  <p className="text-blue-100">{feature.description}</p>
                 </AnimatedCard>
               ))}
             </motion.div>
 
             {/* How to Play */}
             <motion.div 
-              className="bg-white rounded-3xl shadow-2xl p-8"
+              className="bg-blue-900/30 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-blue-300/20"
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.8 }}
             >
-              <h2 className="text-3xl font-bold text-gray-800 mb-8">🎮 How to Play</h2>
+              <h2 className="text-3xl font-bold text-yellow-400 mb-8">How to Play</h2>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 {[
                   { step: '1', title: 'Connect Wallet', description: 'Connect your Web3 wallet to get started', color: 'blue' },
                   { step: '2', title: 'Choose Number', description: 'Pick your lucky number from 1 to 6', color: 'purple' },
-                  { step: '3', title: 'Place Bet', description: 'Enter your bet amount in ETH', color: 'green' },
+                  { step: '3', title: 'Place Bet (ETH)', description: 'Enter your bet amount in native currency (ETH)', color: 'green' },
                   { step: '4', title: 'Roll & Win', description: 'Roll the dice and win 2x if you guess right!', color: 'yellow' }
-                ].map((step, index) => (
+                ].map((step, index) => {
+                  const getColorClasses = (color: string) => {
+                    switch (color) {
+                      case 'blue':
+                        return { border: 'border-blue-400', text: 'text-blue-400' };
+                      case 'purple':
+                        return { border: 'border-purple-400', text: 'text-purple-400' };
+                      case 'green':
+                        return { border: 'border-green-400', text: 'text-green-400' };
+                      case 'yellow':
+                        return { border: 'border-yellow-400', text: 'text-yellow-400' };
+                      default:
+                        return { border: 'border-white', text: 'text-white' };
+                    }
+                  };
+                  
+                  const colorClasses = getColorClasses(step.color);
+                  
+                  return (
                   <motion.div 
                     key={index}
                     className="p-4"
@@ -415,16 +438,17 @@ export default function Home() {
                     whileHover={{ y: -5 }}
                   >
                     <motion.div 
-                      className={`bg-gradient-to-br from-${step.color}-100 to-${step.color}-200 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4`}
+                      className={`border-2 ${colorClasses.border} rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-transparent`}
                       whileHover={{ scale: 1.1, rotate: 360 }}
                       transition={{ duration: 0.6 }}
                     >
-                      <span className={`text-2xl font-bold text-${step.color}-600`}>{step.step}</span>
+                      <span className={`text-2xl font-bold ${colorClasses.text}`}>{step.step}</span>
                     </motion.div>
-                    <h4 className="font-semibold text-gray-800 mb-2">{step.title}</h4>
-                    <p className="text-gray-600 text-sm">{step.description}</p>
+                    <h4 className="font-semibold text-white mb-2">{step.title}</h4>
+                    <p className="text-blue-100 text-sm">{step.description}</p>
                   </motion.div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           </div>
@@ -436,7 +460,7 @@ export default function Home() {
   // If wallet is connected, show the game interface
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100"
+      className="min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
@@ -444,6 +468,17 @@ export default function Home() {
       {/* Confetti Animation */}
       <AnimatePresence>
         {showConfetti && <Confetti />}
+      </AnimatePresence>
+
+      {/* Emoji Rain Animation */}
+      <AnimatePresence>
+        {showEmojiRain.show && (
+          <EmojiRain 
+            emoji={showEmojiRain.emoji}
+            duration={1000}
+            onComplete={() => setShowEmojiRain({ show: false, emoji: '' })}
+          />
+        )}
       </AnimatePresence>
 
       <main className="container mx-auto px-4 py-8">
@@ -456,19 +491,19 @@ export default function Home() {
         >
           <Link href="/liquidity">
             <AnimatedButton variant="success" className="px-6 py-3">
-              💰 Liquidity Pool
+              Liquidity Pool
             </AnimatedButton>
           </Link>
           <Link href="/leaderboard">
             <AnimatedButton variant="warning" className="px-6 py-3">
-              🏆 Leaderboard
+              Leaderboard
             </AnimatedButton>
           </Link>
         </motion.div>
 
         {/* Game Section */}
         <motion.div 
-          className="max-w-2xl mx-auto"
+          className="max-w-4xl mx-auto"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -477,10 +512,10 @@ export default function Home() {
           <AnimatePresence>
             {latestResult && (
               <motion.div 
-                className={`mb-6 p-6 rounded-2xl shadow-2xl border-2 ${
+                className={`mb-6 p-6 rounded-2xl shadow-2xl border-2 backdrop-blur-md ${
                   latestResult.type === 'won' 
-                    ? 'bg-gradient-to-r from-green-100 to-emerald-100 border-green-300' 
-                    : 'bg-gradient-to-r from-red-100 to-pink-100 border-red-300'
+                    ? 'bg-green-900/30 border-green-400/30' 
+                    : 'bg-red-900/30 border-red-400/30'
                 }`}
                 initial={{ scale: 0, rotate: -10 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -490,9 +525,7 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <motion.div 
-                      className={`text-6xl mr-4 ${
-                        latestResult.type === 'won' ? '' : ''
-                      }`}
+                      className="text-6xl mr-4"
                       animate={latestResult.type === 'won' ? 
                         { scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] } : 
                         { opacity: [1, 0.5, 1] }
@@ -504,7 +537,7 @@ export default function Home() {
                     <div>
                       <motion.h3 
                         className={`text-2xl font-bold mb-2 ${
-                          latestResult.type === 'won' ? 'text-green-800' : 'text-red-800'
+                          latestResult.type === 'won' ? 'text-green-300' : 'text-red-300'
                         }`}
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
@@ -518,7 +551,7 @@ export default function Home() {
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.5 }}
                       >
-                        <p className="text-lg">
+                        <p className="text-lg text-white">
                           <span className="font-semibold">Rolled: </span>
                           <motion.span 
                             className="text-2xl font-bold"
@@ -528,13 +561,13 @@ export default function Home() {
                             {latestResult.rolledNumber}
                           </motion.span>
                         </p>
-                        <p className="text-lg">
+                        <p className="text-lg text-white">
                           <span className="font-semibold">Bet Amount: </span>
                           <span className="font-mono">{parseFloat(latestResult.betAmount).toFixed(6)} ETH</span>
                         </p>
                         {latestResult.type === 'won' && latestResult.winningAmount && (
                           <motion.p 
-                            className="text-lg text-green-700"
+                            className="text-lg text-green-300"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.8, type: "spring", stiffness: 500 }}
@@ -552,7 +585,7 @@ export default function Home() {
                         href={`https://sepolia.etherscan.io/tx/${latestResult.transactionHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-800 underline"
+                        className="text-sm text-blue-300 hover:text-blue-100 underline"
                         whileHover={{ scale: 1.1 }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -584,7 +617,7 @@ export default function Home() {
           <AnimatePresence>
             {isPendingResult && !isRollingDice && !isConfirming && !latestResult && (
               <motion.div 
-                className="mb-6 p-4 rounded-xl bg-yellow-100 border border-yellow-300 text-yellow-800"
+                className="mb-6 p-4 rounded-xl bg-yellow-900/30 backdrop-blur-md border border-yellow-400/30 text-yellow-200"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
@@ -595,7 +628,7 @@ export default function Home() {
                     <LoadingSpinner size="sm" color="yellow" />
                   </div>
                   <span className="font-medium">
-                    🎲 Waiting for Chainlink VRF to determine dice result...
+                    Waiting for Chainlink VRF to determine dice result...
                   </span>
                 </div>
                 <div className="mt-2 text-sm">
@@ -605,7 +638,7 @@ export default function Home() {
                       href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-yellow-600 hover:text-yellow-800 underline"
+                      className="text-yellow-300 hover:text-yellow-100 underline"
                       whileHover={{ scale: 1.05 }}
                     >
                       View transaction ↗
@@ -620,7 +653,7 @@ export default function Home() {
           <AnimatePresence>
             {(isRollingDice || isConfirming) && (
               <motion.div 
-                className="mb-6 p-4 rounded-xl bg-blue-100 border border-blue-300 text-blue-800"
+                className="mb-6 p-4 rounded-xl bg-blue-900/30 backdrop-blur-md border border-blue-400/30 text-blue-200"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
@@ -646,7 +679,7 @@ export default function Home() {
                       href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
+                      className="text-blue-300 hover:text-blue-100 underline"
                       whileHover={{ scale: 1.05 }}
                     >
                       View on Etherscan ↗
@@ -661,7 +694,7 @@ export default function Home() {
           <AnimatePresence>
             {isConfirmed && transactionHash && (
               <motion.div 
-                className="mb-6 p-4 rounded-xl bg-green-100 border border-green-300 text-green-800"
+                className="mb-6 p-4 rounded-xl bg-green-900/30 backdrop-blur-md border border-green-400/30 text-green-200"
                 initial={{ scale: 0, rotate: -10 }}
                 animate={{ scale: 1, rotate: 0 }}
                 exit={{ scale: 0, rotate: 10 }}
@@ -669,7 +702,7 @@ export default function Home() {
               >
                 <div className="flex items-center">
                   <motion.span 
-                    className="text-green-600 mr-3"
+                    className="text-green-400 mr-3"
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 0.6, repeat: 2 }}
                   >
@@ -687,7 +720,7 @@ export default function Home() {
                     href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-green-600 hover:text-green-800 underline"
+                    className="text-green-300 hover:text-green-100 underline"
                     whileHover={{ scale: 1.05 }}
                   >
                     View transaction ↗
@@ -698,7 +731,7 @@ export default function Home() {
           </AnimatePresence>
 
           <motion.div 
-            className="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm border border-white/20"
+            className="bg-blue-900/30 backdrop-blur-md rounded-3xl shadow-2xl p-10 border border-blue-300/20"
             initial={{ y: 50, scale: 0.9, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
@@ -709,8 +742,8 @@ export default function Home() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
             >
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">🎲 Roll The Dice</h1>
-              <p className="text-gray-600 text-lg">Predict the number and win 2x your bet!</p>
+              <h1 className="text-4xl font-bold text-yellow-400 mb-2">Roll The Dice</h1>
+              <p className="text-blue-100 text-lg">Predict the number and win 2x your bet!</p>
             </motion.div>
 
             {/* Animated Dice Display */}
@@ -731,8 +764,8 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.0 }}
             >
-              <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">Choose Your Lucky Number</h2>
-              <div className="grid grid-cols-6 gap-3">
+              <h2 className="text-xl font-semibold text-white mb-4 text-center">Choose Your Lucky Number</h2>
+              <div className="grid grid-cols-6 gap-4">
                 {diceNumbers.map((num, index) => (
                   <motion.button
                     key={num}
@@ -740,7 +773,7 @@ export default function Home() {
                     className={`aspect-square rounded-xl text-2xl font-bold transition-all ${
                       prediction === num
                         ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-blue-800/30 backdrop-blur-sm text-white hover:bg-blue-700/40 border border-blue-400/30'
                     }`}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.95 }}
@@ -758,7 +791,7 @@ export default function Home() {
                 ))}
               </div>
               <motion.p 
-                className="text-center text-gray-600 mt-2"
+                className="text-center text-blue-100 mt-2"
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 key={prediction}
@@ -774,7 +807,7 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.4 }}
             >
-              <label className="block text-xl font-semibold text-gray-700 mb-4 text-center">
+              <label className="block text-xl font-semibold text-yellow-400 mb-4 text-center">
                 Place Your Bet (ETH)
               </label>
               <div className="relative">
@@ -785,24 +818,24 @@ export default function Home() {
                   placeholder={minBetLoading ? "0.001" : minBetEth}
                   step="0.001"
                   min={minBetEth}
-                  className="w-full px-6 py-4 text-xl text-center border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors bg-gray-50 font-mono"
-                  whileFocus={{ scale: 1.02, borderColor: "#3b82f6" }}
+                  className="w-full px-6 py-4 text-xl text-center border-2 border-blue-400/30 rounded-xl focus:border-blue-400 focus:outline-none transition-colors bg-blue-800/20 backdrop-blur-sm font-mono text-white placeholder-blue-200"
+                  whileFocus={{ scale: 1.02, borderColor: "#60a5fa" }}
                   transition={{ type: "spring", stiffness: 300 }}
                 />
               </div>
               <motion.div 
-                className="flex justify-between mt-3 text-sm text-gray-600"
+                className="flex justify-between mt-3 text-sm text-blue-100"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.6 }}
               >
                 <span>
                   Min bet: {minBetLoading ? '...' : minBetError ? '0.001' : minBetEth} ETH
-                  {minBetError && <span className="text-red-500 ml-1" title="Error loading min bet from contract">(fallback)</span>}
+                  {minBetError && <span className="text-red-300 ml-1" title="Error loading min bet from contract">(fallback)</span>}
                 </span>
                 <motion.span
                   key={betAmount}
-                  animate={{ scale: [1, 1.1, 1], color: ["#6b7280", "#10b981", "#6b7280"] }}
+                  animate={{ scale: [1, 1.1, 1], color: ["#dbeafe", "#10b981", "#dbeafe"] }}
                   transition={{ duration: 0.5 }}
                 >
                   Win: {betAmount ? (parseFloat(betAmount) * (multiplier || 2)).toFixed(6) : '0.000000'} ETH
@@ -864,7 +897,7 @@ export default function Home() {
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
-                      🎲 Roll The Dice!
+                      Roll The Dice!
                     </motion.span>
                   )}
                 </motion.div>
@@ -872,7 +905,7 @@ export default function Home() {
               <AnimatePresence>
                 {betAmount && parseFloat(betAmount) < parseFloat(minBetEth) && (
                   <motion.p 
-                    className="text-red-500 text-sm mt-2"
+                    className="text-red-300 text-sm mt-2"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -882,7 +915,7 @@ export default function Home() {
                 )}
                 {!isAuthenticated && (
                   <motion.p 
-                    className="text-red-500 text-sm mt-2"
+                    className="text-red-300 text-sm mt-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
@@ -891,7 +924,7 @@ export default function Home() {
                 )}
                 {writeError && (
                   <motion.p 
-                    className="text-red-500 text-sm mt-2"
+                    className="text-red-300 text-sm mt-2"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                   >
@@ -903,19 +936,19 @@ export default function Home() {
 
             {/* Game Stats */}
             <motion.div 
-              className="mt-8 pt-6 border-t border-gray-200"
+              className="mt-8 pt-6 border-t border-blue-400/30"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.0 }}
             >
-              <div className="grid grid-cols-2 gap-6 text-center max-w-md mx-auto">
+              <div className="grid grid-cols-2 gap-8 text-center max-w-lg mx-auto">
                 <motion.div 
-                  className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl"
+                  className="bg-green-900/30 backdrop-blur-md p-6 rounded-xl border border-green-400/30"
                   whileHover={{ scale: 1.05, rotate: 1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <motion.div 
-                    className="text-2xl font-bold text-green-600"
+                    className="text-2xl font-bold text-green-300"
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
@@ -929,15 +962,15 @@ export default function Home() {
                     ) : scoreError ? 'Error' : 
                      playerScore !== undefined ? Number(playerScore).toString() : '0'}
                   </motion.div>
-                  <div className="text-sm text-gray-600">Your Score</div>
+                  <div className="text-sm text-blue-200">Your Score</div>
                 </motion.div>
                 <motion.div 
-                  className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl"
+                  className="bg-purple-900/30 backdrop-blur-md p-6 rounded-xl border border-purple-400/30"
                   whileHover={{ scale: 1.05, rotate: -1 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <motion.div 
-                    className="text-2xl font-bold text-purple-600"
+                    className="text-2xl font-bold text-purple-300"
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity, delay: 1 }}
                   >
@@ -950,7 +983,7 @@ export default function Home() {
                       </motion.span>
                     ) : `${multiplier || 2}x`}
                   </motion.div>
-                  <div className="text-sm text-gray-600">Multiplier</div>
+                  <div className="text-sm text-blue-200">Multiplier</div>
                 </motion.div>
               </div>
             </motion.div>

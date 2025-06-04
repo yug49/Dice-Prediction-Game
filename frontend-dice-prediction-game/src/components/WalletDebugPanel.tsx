@@ -26,9 +26,9 @@ export const WalletDebugPanel = () => {
     }
 
     return (
-        <div className="fixed bottom-4 right-4 bg-black bg-opacity-80 text-white p-4 rounded-lg text-xs max-w-sm z-50">
-            <h3 className="font-bold mb-2">🐛 Wallet Debug</h3>
-            <div className="space-y-1">
+        <div className="fixed bottom-4 right-4 bg-black bg-opacity-80 text-white p-6 rounded-lg text-xs max-w-md z-50">
+            <h3 className="font-bold mb-3">🐛 Wallet Debug</h3>
+            <div className="space-y-2">
                 <div>Ready: {ready ? '✅' : '❌'}</div>
                 <div>Authenticated: {authenticated ? '✅' : '❌'}</div>
                 <div>Is Connected: {isConnected ? '✅' : '❌'}</div>
@@ -43,7 +43,7 @@ export const WalletDebugPanel = () => {
                 <div>Wallet Ready: {isWalletReady ? '✅' : '❌'}</div>
                 
                 {/* Status Summary */}
-                <div className="mt-2 pt-2 border-t border-gray-600">
+                <div className="mt-3 pt-3 border-t border-gray-600">
                     <div className="font-bold text-yellow-300">Status:</div>
                     {!ready && <div className="text-red-300">⏳ Privy initializing...</div>}
                     {ready && !authenticated && <div className="text-red-300">❌ Not authenticated</div>}
@@ -53,7 +53,7 @@ export const WalletDebugPanel = () => {
                 </div>
                 
                 {balanceError && (
-                    <div className="text-red-300 text-xs mt-2">
+                    <div className="text-red-300 text-xs mt-3">
                         Error: {balanceError.message}
                     </div>
                 )}

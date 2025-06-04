@@ -61,10 +61,10 @@ export default function LeaderboardPage() {
   // Show loading while Privy is initializing
   if (!ready) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
+          <p className="text-white">Loading...</p>
         </div>
       </div>
     );
@@ -74,7 +74,7 @@ export default function LeaderboardPage() {
   if (!authenticated) {
     return (
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+        className="min-h-screen"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -97,7 +97,7 @@ export default function LeaderboardPage() {
           </motion.div>
 
           <motion.div 
-            className="max-w-2xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -117,7 +117,7 @@ export default function LeaderboardPage() {
                 🏆
               </motion.div>
               <motion.h1 
-                className="text-3xl font-bold text-gray-800 mb-4"
+                className="text-3xl font-bold text-white mb-4"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
@@ -125,7 +125,7 @@ export default function LeaderboardPage() {
                 Leaderboard
               </motion.h1>
               <motion.p 
-                className="text-gray-600 text-lg mb-8"
+                className="text-blue-100 text-lg mb-8"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.7 }}
@@ -157,7 +157,7 @@ export default function LeaderboardPage() {
   if (isLoading) {
     return (
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100 flex items-center justify-center"
+        className="min-h-screen flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -170,7 +170,7 @@ export default function LeaderboardPage() {
         >
           <LoadingSpinner size="lg" />
           <motion.p 
-            className="text-gray-600 text-lg mt-4"
+            className="text-white text-lg mt-4"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -186,7 +186,7 @@ export default function LeaderboardPage() {
   if (error) {
     return (
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+        className="min-h-screen"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -222,7 +222,7 @@ export default function LeaderboardPage() {
                 ⚠️
               </motion.div>
               <motion.h1 
-                className="text-3xl font-bold text-gray-800 mb-4"
+                className="text-3xl font-bold text-white mb-4"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
@@ -230,7 +230,7 @@ export default function LeaderboardPage() {
                 Error Loading Leaderboard
               </motion.h1>
               <motion.p 
-                className="text-gray-600 text-lg mb-8"
+                className="text-blue-100 text-lg mb-8"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
@@ -283,7 +283,7 @@ export default function LeaderboardPage() {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-100"
+      className="min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -305,7 +305,7 @@ export default function LeaderboardPage() {
           </AnimatedLink>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
           <motion.div 
             className="text-center mb-8"
@@ -314,15 +314,15 @@ export default function LeaderboardPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <motion.h1 
-              className="text-4xl font-bold text-gray-800 mb-2"
+              className="text-4xl font-bold text-yellow-400 mb-2"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              🏆 Leaderboard
+              Leaderboard
             </motion.h1>
             <motion.p 
-              className="text-gray-600 text-lg"
+              className="text-blue-100 text-lg"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -334,7 +334,7 @@ export default function LeaderboardPage() {
           {/* Current Player Position */}
           {currentPlayer && (
             <motion.div 
-              className="bg-white rounded-3xl shadow-2xl p-6 mb-8 border-2 border-blue-300"
+              className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-3xl shadow-2xl p-6 mb-8"
               initial={{ y: 30, opacity: 0, scale: 0.95 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -347,7 +347,7 @@ export default function LeaderboardPage() {
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
                 <motion.h2 
-                  className="text-xl font-semibold text-gray-800 mb-4"
+                  className="text-xl font-semibold text-yellow-400 mb-4"
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.7 }}
@@ -373,71 +373,19 @@ export default function LeaderboardPage() {
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 1.0 }}
                   >
-                    <div className="text-2xl font-bold text-gray-800">
+                    <div className="text-2xl font-bold text-white">
                       <AnimatedCounter value={currentPlayer.score} duration={1000} /> points
                     </div>
-                    <div className="text-gray-600">{formatAddress(currentPlayer.address)}</div>
+                    <div className="text-blue-200">{formatAddress(currentPlayer.address)}</div>
                   </motion.div>
                 </motion.div>
               </motion.div>
             </motion.div>
           )}
 
-          {/* Current Player Score - Always Show */}
-          <motion.div 
-            className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl shadow-2xl p-6 mb-8 text-white"
-            initial={{ y: 30, opacity: 0, scale: 0.95 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            whileHover={{ y: -5, scale: 1.02 }}
-          >
-            <motion.div 
-              className="text-center"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
-            >
-              <motion.h2 
-                className="text-xl font-semibold mb-4"
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-              >
-                Your Score
-              </motion.h2>
-              <motion.div 
-                className="grid md:grid-cols-2 gap-4"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.9 }}
-              >
-                <motion.div 
-                  className="bg-white/20 rounded-xl p-4 hover:bg-white/30"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="text-sm opacity-90 mb-1">Wallet Address</div>
-                  <div className="font-mono text-lg font-semibold">
-                    {effectiveAddress && authenticated ? formatAddress(effectiveAddress) : 'Not Connected'}
-                  </div>
-                </motion.div>
-                <motion.div 
-                  className="bg-white/20 rounded-xl p-4 hover:bg-white/30"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="text-sm opacity-90 mb-1">Your Score</div>
-                  <div className="text-2xl font-bold">
-                    <AnimatedCounter value={currentUserScore ? Number(currentUserScore) : 0} duration={1000} /> points
-                  </div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
           {/* Leaderboard */}
           <motion.div 
-            className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-3xl shadow-2xl overflow-hidden"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 1.0 }}
@@ -458,12 +406,12 @@ export default function LeaderboardPage() {
               </motion.h2>
             </motion.div>
             
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-blue-300/20">
               {players.map((player, index) => (
                 <motion.div 
                   key={player.address} 
-                  className={`p-6 transition-colors hover:bg-gray-50 ${
-                    player.address.toLowerCase() === effectiveAddress?.toLowerCase() ? 'bg-blue-50 border-l-4 border-blue-500 hover:bg-blue-100' : 'hover:bg-gray-100'
+                  className={`p-6 transition-colors hover:bg-blue-800/20 ${
+                    player.address.toLowerCase() === effectiveAddress?.toLowerCase() ? 'bg-blue-700/30 border-l-4 border-blue-400 hover:bg-blue-700/40' : 'hover:bg-blue-800/20'
                   }`}
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -481,7 +429,7 @@ export default function LeaderboardPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <motion.div 
-                        className={`text-2xl font-bold ${player.position <= 3 ? 'text-3xl' : 'text-gray-600'}`}
+                        className={`text-2xl font-bold ${player.position <= 3 ? 'text-3xl' : 'text-blue-100'}`}
                         initial={{ scale: 0, rotate: -90 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ 
@@ -503,11 +451,11 @@ export default function LeaderboardPage() {
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 1.5 + (index * 0.1) }}
                       >
-                        <div className="font-mono text-lg font-semibold text-gray-800">
+                        <div className="font-mono text-lg font-semibold text-white">
                           {formatAddress(player.address)}
                           {player.address.toLowerCase() === effectiveAddress?.toLowerCase() && (
                             <motion.span 
-                              className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                              className="ml-2 px-2 py-1 bg-blue-500/30 text-blue-200 text-xs rounded-full backdrop-blur-sm"
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
                               transition={{ 
@@ -521,7 +469,7 @@ export default function LeaderboardPage() {
                             </motion.span>
                           )}
                         </div>
-                        <div className="text-gray-600 text-sm">
+                        <div className="text-blue-200 text-sm">
                           Position #{player.position}
                         </div>
                       </motion.div>
@@ -532,10 +480,10 @@ export default function LeaderboardPage() {
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ duration: 0.5, delay: 1.5 + (index * 0.1) }}
                     >
-                      <div className="text-2xl font-bold text-gray-800">
+                      <div className="text-2xl font-bold text-white">
                         <AnimatedCounter value={player.score} duration={1000} />
                       </div>
-                      <div className="text-gray-600 text-sm">
+                      <div className="text-blue-200 text-sm">
                         points
                       </div>
                     </motion.div>
@@ -553,7 +501,7 @@ export default function LeaderboardPage() {
             transition={{ duration: 0.6, delay: 1.8 }}
           >
             <motion.div 
-              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-xl shadow-lg p-6 text-center"
               initial={{ y: 30, opacity: 0, scale: 0.9 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 1.9 }}
@@ -565,7 +513,7 @@ export default function LeaderboardPage() {
               }}
             >
               <motion.div 
-                className="text-3xl font-bold text-purple-600 mb-2"
+                className="text-3xl font-bold text-purple-300 mb-2"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5, delay: 2.0, type: "spring", stiffness: 200 }}
@@ -573,7 +521,7 @@ export default function LeaderboardPage() {
                 <AnimatedCounter value={stats.totalPlayers} duration={1000} />
               </motion.div>
               <motion.div 
-                className="text-gray-600"
+                className="text-blue-100"
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 2.1 }}
@@ -583,7 +531,7 @@ export default function LeaderboardPage() {
             </motion.div>
             
             <motion.div 
-              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-xl shadow-lg p-6 text-center"
               initial={{ y: 30, opacity: 0, scale: 0.9 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 2.0 }}
@@ -595,7 +543,7 @@ export default function LeaderboardPage() {
               }}
             >
               <motion.div 
-                className="text-3xl font-bold text-green-600 mb-2"
+                className="text-3xl font-bold text-green-300 mb-2"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5, delay: 2.1, type: "spring", stiffness: 200 }}
@@ -603,7 +551,7 @@ export default function LeaderboardPage() {
                 <AnimatedCounter value={stats.highestScore} duration={1000} />
               </motion.div>
               <motion.div 
-                className="text-gray-600"
+                className="text-blue-100"
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 2.2 }}
@@ -613,7 +561,7 @@ export default function LeaderboardPage() {
             </motion.div>
             
             <motion.div 
-              className="bg-white rounded-xl shadow-lg p-6 text-center"
+              className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-xl shadow-lg p-6 text-center"
               initial={{ y: 30, opacity: 0, scale: 0.9 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 2.1 }}
@@ -625,7 +573,7 @@ export default function LeaderboardPage() {
               }}
             >
               <motion.div 
-                className="text-3xl font-bold text-blue-600 mb-2"
+                className="text-3xl font-bold text-blue-300 mb-2"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5, delay: 2.2, type: "spring", stiffness: 200 }}
@@ -633,7 +581,7 @@ export default function LeaderboardPage() {
                 <AnimatedCounter value={stats.averageScore} duration={1000} />
               </motion.div>
               <motion.div 
-                className="text-gray-600"
+                className="text-blue-100"
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 2.3 }}
@@ -645,19 +593,19 @@ export default function LeaderboardPage() {
 
           {/* How Scoring Works */}
           <motion.div 
-            className="bg-white rounded-3xl shadow-2xl p-8 mt-8"
+            className="bg-blue-900/30 backdrop-blur-md border border-blue-300/20 rounded-3xl shadow-2xl p-8 mt-8"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 2.4 }}
             whileHover={{ y: -5, scale: 1.02 }}
           >
             <motion.h2 
-              className="text-2xl font-semibold text-gray-800 mb-6 text-center"
+              className="text-2xl font-semibold text-yellow-400 mb-6 text-center"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 2.5 }}
             >
-              📊 How Scoring Works
+              How Scoring Works
             </motion.h2>
             <motion.div 
               className="flex justify-center"
@@ -686,7 +634,7 @@ export default function LeaderboardPage() {
                   🎯
                 </motion.div>
                 <motion.h3 
-                  className="font-semibold text-gray-800 mb-2"
+                  className="font-semibold text-white mb-2"
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 2.8 }}
@@ -694,7 +642,7 @@ export default function LeaderboardPage() {
                   Correct Prediction
                 </motion.h3>
                 <motion.p 
-                  className="text-gray-600 text-sm"
+                  className="text-blue-100 text-sm"
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 2.9 }}

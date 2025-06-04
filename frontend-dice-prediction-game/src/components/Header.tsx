@@ -65,20 +65,20 @@ const Header: React.FC = () => {
     // Wait for Privy to be ready before rendering wallet state
     if (!ready) {
         return (
-            <header className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 shadow-sm">
+            <header className="flex justify-between items-center p-4 bg-blue-900/30 backdrop-blur-md border-b border-blue-300/20 shadow-sm">
                 <div className="flex items-center gap-4">
                     <a 
                         href="https://github.com/yug49/Dice-Prediction-Game" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-gray-600 hover:text-black hover:cursor-pointer transition-colors"
+                        className="flex items-center gap-2 text-blue-200 hover:text-white hover:cursor-pointer transition-colors"
                     >
                         <FaGithub size={24} />
                     </a>
-                    <h1 className="text-xl font-bold text-gray-700">🎲 Dice Prediction Game</h1>
+                    <h1 className="text-xl font-bold text-white">Dice Prediction Game</h1>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="px-6 py-2 bg-gray-200 text-gray-500 rounded-lg">
+                    <div className="px-6 py-2 bg-blue-800/30 text-blue-200 rounded-lg backdrop-blur-sm">
                         Loading...
                     </div>
                 </div>
@@ -87,26 +87,26 @@ const Header: React.FC = () => {
     }
 
     return (
-        <header className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 shadow-sm">
+        <header className="flex justify-between items-center p-6 bg-blue-900/30 backdrop-blur-md border-b border-blue-300/20 shadow-sm">
             <div className="flex items-center gap-4">
                 <a 
                     href="https://github.com/yug49/Dice-Prediction-Game" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-gray-600 hover:text-black hover:cursor-pointer transition-colors"
+                    className="flex items-center gap-2 text-blue-200 hover:text-white hover:cursor-pointer transition-colors"
                 >
-                    <FaGithub size={24} />
+                    <FaGithub size={32} />
                 </a>
-                <h1 className="text-xl font-bold text-gray-700">🎲 Dice Prediction Game</h1>
+                <h1 className="text-xl font-bold text-yellow-400">Dice Prediction Game</h1>
             </div>
             <div className="flex items-center gap-4">
                 {ready && authenticated && (isConnected && address || user?.wallet?.address) ? (
                     <div className="flex items-center gap-4">
-                        <div className="text-sm bg-white rounded-lg px-3 py-2 shadow-sm border">
-                            <div className="font-semibold text-gray-700">
+                        <div className="text-sm bg-blue-900/30 backdrop-blur-md rounded-lg px-4 py-3 shadow-sm border border-blue-300/20">
+                            <div className="font-semibold text-yellow-400">
                                 {formatAddress(effectiveAddress || '')}
                             </div>
-                            <div className="text-gray-500 text-xs">
+                            <div className="text-blue-200 text-xs">
                                 {/* Show chain info - prioritize wagmi chain, fallback to Sepolia */}
                                 {chain?.name || 'Sepolia'} • {
                                     balanceLoading 
@@ -119,12 +119,12 @@ const Header: React.FC = () => {
                                 } ETH
                                 {/* Network mismatch warning - only show if wagmi is connected */}
                                 {isConnected && chain && chain.id !== sepolia.id && (
-                                    <div className="text-red-500 text-xs mt-1">
+                                    <div className="text-red-300 text-xs mt-1">
                                         ⚠️ Switch to Sepolia
                                     </div>
                                 )}
                                 {balanceError && (
-                                    <div className="text-orange-500 text-xs mt-1">
+                                    <div className="text-orange-300 text-xs mt-1">
                                         <button 
                                             onClick={() => refetchBalance()}
                                             className="hover:underline"
@@ -136,7 +136,7 @@ const Header: React.FC = () => {
                             </div>
                         </div>
                         <button
-                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
+                            className="px-6 py-3 bg-red-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
                             onClick={handleDisconnect}
                         >
                             Disconnect
@@ -144,7 +144,7 @@ const Header: React.FC = () => {
                     </div>
                 ) : (
                     <button
-                        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
+                        className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
                         onClick={handleConnect}
                     >
                         Connect Wallet
