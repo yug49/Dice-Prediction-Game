@@ -21,7 +21,9 @@ It is a decentralized dice prediction game built with [Solidity](https://docs.so
 
 ## Play the Game
 
-🎮 **Live Game**: [https://dice-prediction-game-eta.vercel.app/](https://dice-prediction-game-eta.vercel.app/)
+**Live Game**: [https://dice-prediction-game-eta.vercel.app/](https://dice-prediction-game-eta.vercel.app/)
+
+**Demo Video Link**: [https://www.loom.com/share/04942a636dec43daa4d32101ba2e4fd4?sid=5c18967a-e7bf-4e87-a294-41f771aff439](https://www.loom.com/share/04942a636dec43daa4d32101ba2e4fd4?sid=5c18967a-e7bf-4e87-a294-41f771aff439)
 
 ⚠️ **Important**: To run the app properly, remember to switch off CORS restrictions in your browser. You can do so by using a simple browser extension like "CORS Unblock" or "Disable CORS".
 
