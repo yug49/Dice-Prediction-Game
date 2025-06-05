@@ -305,7 +305,7 @@ export default function LiquidityPage() {
                       <LoadingSpinner size="sm" />
                     ) : (
                       <AnimatedCounter 
-                        value={parseFloat(userDiceTokens)} 
+                        value={parseFloat(parseFloat(userDiceTokens).toFixed(6))} 
                         duration={1000}
                       />
                     )} DICE
@@ -348,7 +348,7 @@ export default function LiquidityPage() {
                       <LoadingSpinner size="sm" />
                     ) : (
                       <AnimatedCounter 
-                        value={parseFloat(userContribution)} 
+                        value={parseFloat(parseFloat(userContribution).toFixed(6))} 
                         duration={1000}
                       />
                     )} ETH
